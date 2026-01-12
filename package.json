@@ -1,0 +1,25 @@
+{
+  "name": "brandpack-tools",
+  "version": "2.0.0",
+  "description": "Brandpack Tools - Proofing Room Management Suite",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/build-all.js",
+    "preview": "vite preview",
+    "package": "node scripts/package.js"
+  },
+  "keywords": [
+    "brandpack",
+    "proofing",
+    "tools",
+    "pantone",
+    "inventory"
+  ],
+  "author": "Brandpack Australasia",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^7.3.1",
+    "vite-plugin-singlefile": "^2.3.0"
+  }
+}

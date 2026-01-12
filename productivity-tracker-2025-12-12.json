@@ -1,0 +1,134 @@
+{
+  "history": [
+    {
+      "status": "unavailable",
+      "task": "Morning",
+      "startTime": 1765479509121,
+      "duration": 418339,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "working",
+      "task": "Set-up",
+      "startTime": 1765479931299,
+      "duration": 1244788,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "working",
+      "task": "Proofing",
+      "startTime": 1765481176088,
+      "duration": 1030191,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "available",
+      "task": "Available",
+      "startTime": 1765482206281,
+      "duration": 6308727,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "working",
+      "task": "Admin",
+      "startTime": 1765488518084,
+      "duration": 10381,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "unavailable",
+      "task": "Bathroom break",
+      "startTime": 1765488529965,
+      "duration": 213115,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "working",
+      "task": "Admin",
+      "startTime": 1765488752922,
+      "duration": 5510768,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "working",
+      "task": "Proofing",
+      "startTime": 1765494263692,
+      "duration": 3068769,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "unavailable",
+      "task": "Tea break",
+      "startTime": 1765497334324,
+      "duration": 1007137,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "available",
+      "task": "Available",
+      "startTime": 1765498341463,
+      "duration": 1070964,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "working",
+      "task": "Developing",
+      "startTime": 1765499414299,
+      "duration": 2578438,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "unavailable",
+      "task": "Tea break",
+      "startTime": 1765501996418,
+      "duration": 677728,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "working",
+      "task": "Admin",
+      "startTime": 1765502678525,
+      "duration": 989000,
+      "date": "Fri Dec 12 2025"
+    },
+    {
+      "status": "working",
+      "task": "Developing",
+      "startTime": 1765503667528,
+      "duration": 4415486,
+      "date": "Fri Dec 12 2025"
+    }
+  ],
+  "dailyTotals": {
+    "available": 7379691,
+    "working": 18847821,
+    "unavailable": 2316319
+  },
+  "taskTotals": {
+    "unavailable-Morning": 418339,
+    "working-Set-up": 1244788,
+    "working-Proofing": 4098960,
+    "available-Available": 7379691,
+    "working-Admin": 6510149,
+    "unavailable-Bathroom break": 213115,
+    "unavailable-Tea break": 1684865,
+    "working-Developing": 6993924
+  },
+  "tasks": {
+    "working": [
+      "Admin",
+      "Maintenance",
+      "Troubleshooting",
+      "Set-up",
+      "Proofing",
+      "Developing"
+    ],
+    "unavailable": [
+      "Lunch break",
+      "Tea break",
+      "Bathroom break",
+      "Morning"
+    ]
+  },
+  "exportDate": "2025-12-12T02:54:45.225Z"
+}

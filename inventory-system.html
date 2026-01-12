@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proofing Room Inventory</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'DM Sans', system-ui, sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #020617; color: #22d3ee;">
+            <div style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 10px;">⏳</div>
+                <div style="font-size: 18px;">Loading inventory system...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial inventory structure with proper product codes from supplier
+        const INITIAL_INVENTORY = {
+          'Epson 9900/WT7900': {
+            'Shared Inks': [
+              { id: 'T636200', name: 'T636200 - Cyan', stock: 0, unit: '700ml' },
+              { id: 'T636500', name: 'T636500 - Light Cyan', stock: 0, unit: '700ml' },
+              { id: 'T636300', name: 'T636300 - Vivid Magenta', stock: 0, unit: '700ml' },
+              { id: 'T636600', name: 'T636600 - Vivid Light Magenta', stock: 0, unit: '700ml' },
+              { id: 'T636400', name: 'T636400 - Yellow', stock: 0, unit: '700ml' },
+              { id: 'T636B00', name: 'T636B00 - Green', stock: 0, unit: '700ml' },
+              { id: 'T636A00', name: 'T636A00 - Orange', stock: 0, unit: '700ml' },
+              { id: 'T636100', name: 'T636100 - Photo Black', stock: 0, unit: '700ml' },
+              { id: 'T636800', name: 'T636800 - Matte Black', stock: 0, unit: '700ml' },
+              { id: 'T636700', name: 'T636700 - Light Black', stock: 0, unit: '700ml' },
+              { id: 'T636900', name: 'T636900 - Light Light Black', stock: 0, unit: '700ml' },
+              { id: 'T596C00', name: 'T596C00 - White (350ml)', stock: 0, unit: '350ml' },
+            ],
+            'Maintenance': [
+              { id: 'C13T642000', name: 'C13T642000 - Cleaning Cartridge', stock: 0, unit: '150ml' },
+              { id: 'C12C890191', name: 'C12C890191 - Maintenance Tank', stock: 0, unit: 'unit' },
+            ],
+            'Media - 9900': [
+              { id: 'E-PPO250/44/45', name: 'E-PPO250/44/45 - PearlProof Premium OBA 44"', stock: 0, unit: 'roll' },
+            ],
+            'Media - WT7900': [
+              { id: 'CLEARPROOF', name: 'Epson ClearProof', stock: 0, unit: 'roll' },
+            ]
+          },
+          'Epson 9070': {
+            'Inks': [
+              { id: 'T55J292', name: 'T55J292 - Cyan', stock: 0, unit: '700ml' },
+              { id: 'T55J592', name: 'T55J592 - Light Cyan', stock: 0, unit: '700ml' },
+              { id: 'T55J392', name: 'T55J392 - Vivid Magenta', stock: 0, unit: '700ml' },
+              { id: 'T55J692', name: 'T55J692 - Vivid Light Magenta', stock: 0, unit: '700ml' },
+              { id: 'T55J492', name: 'T55J492 - Yellow', stock: 0, unit: '700ml' },
+              { id: 'T55JB92', name: 'T55JB92 - Green', stock: 0, unit: '700ml' },
+              { id: 'T55JA92', name: 'T55JA92 - Orange', stock: 0, unit: '700ml' },
+              { id: 'T55J192', name: 'T55J192 - Photo Black', stock: 0, unit: '700ml' },
+              { id: 'T55J892', name: 'T55J892 - Matte Black', stock: 0, unit: '700ml' },
+              { id: 'T55J792', name: 'T55J792 - Light Black', stock: 0, unit: '700ml' },
+              { id: 'T55J992', name: 'T55J992 - Light Light Black', stock: 0, unit: '700ml' },
+              { id: 'T55JD92', name: 'T55JD92 - Violet', stock: 0, unit: '700ml' },
+            ],
+            'Media': [
+              { id: 'E-PM120/44/45', name: 'E-PM120/44/45 - Matte Coated 120gsm 44"', stock: 0, unit: 'roll' },
+            ]
+          },
+          'Roland': {
+            'Inks': [
+              { id: 'CT-RXRXG-C', name: 'CT-RXRXG-C - Cyan', stock: 0, unit: '220ml' },
+              { id: 'CT-RXRXG-M', name: 'CT-RXRXG-M - Magenta', stock: 0, unit: '220ml' },
+              { id: 'CT-RXRXG-Y', name: 'CT-RXRXG-Y - Yellow', stock: 0, unit: '220ml' },
+              { id: 'CT-RXRXG-K', name: 'CT-RXRXG-K - Black', stock: 0, unit: '220ml' },
+              { id: 'CT-RXRXG-O', name: 'CT-RXRXG-O - Orange', stock: 0, unit: '220ml' },
+              { id: 'CT-RXRXG-G', name: 'CT-RXRXG-G - Green', stock: 0, unit: '220ml' },
+              { id: 'ESL4-WH', name: 'ESL4-WH - White', stock: 0, unit: '220ml' },
+              { id: 'ESL4-MT', name: 'ESL4-MT - Metallic', stock: 0, unit: '220ml' },
+            ],
+            'Media': [
+              { id: 'E-STF030G/24/30', name: 'E-STF030G/24/30 - Transfer Film 24"', stock: 0, unit: 'roll' },
+            ],
+            'Supplies': [
+              { id: '6701409310', name: '6701409310 - Cleaning Kit (fluid + sticks)', stock: 0, unit: 'kit' },
+              { id: 'ST-037-50', name: 'ST-037-50 - Cleaning Sticks (50pk)', stock: 0, unit: 'pack' },
+            ]
+          },
+          'Materials': {
+            'General': []
+          },
+          'Misc': {
+            'General': []
+          }
+        };
+
+        // State management
+        let inventory = JSON.parse(JSON.stringify(INITIAL_INVENTORY));
+        let usageHistory = [];
+        let currentView = 'inventory';
+        let statsFilter = 'month';
+        let selectedPrinter = 'Epson 9900/WT7900'; // Default selected printer
+        let showAddItemModal = false;
+
+        // Load data from localStorage
+        function loadData() {
+            try {
+                const savedInventory = localStorage.getItem('printer-inventory');
+                const savedHistory = localStorage.getItem('printer-usage-history');
+                
+                if (savedInventory) {
+                    inventory = JSON.parse(savedInventory);
+                }
+                if (savedHistory) {
+                    usageHistory = JSON.parse(savedHistory);
+                }
+            } catch (error) {
+                console.log('No existing data, starting fresh');
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('printer-inventory', JSON.stringify(inventory));
+                localStorage.setItem('printer-usage-history', JSON.stringify(usageHistory));
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        }
+
+        function updateStock(printer, category, itemId, change) {
+            const item = inventory[printer][category].find(i => i.id === itemId);
+            
+            if (item) {
+                item.stock = Math.max(0, item.stock + change);
+                
+                if (change < 0) {
+                    usageHistory.push({
+                        id: Date.now(),
+                        timestamp: new Date().toISOString(),
+                        printer,
+                        category,
+                        itemId,
+                        itemName: item.name,
+                        quantity: Math.abs(change),
+                        unit: item.unit
+                    });
+                }
+                
+                saveData();
+                render();
+            }
+        }
+
+        function getStockLevel(stock) {
+            if (stock === 0) return 'empty';
+            if (stock <= 2) return 'low';
+            return 'good';
+        }
+
+        function getFilteredUsage() {
+            const now = new Date();
+            let startDate;
+
+            switch (statsFilter) {
+                case 'week':
+                    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    break;
+                case 'month':
+                    startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    break;
+                case 'year':
+                    startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                    break;
+                default:
+                    return usageHistory;
+            }
+
+            return usageHistory.filter(record => new Date(record.timestamp) >= startDate);
+        }
+
+        function getUsageStats() {
+            const filtered = getFilteredUsage();
+            const stats = {};
+
+            filtered.forEach(record => {
+                const key = `${record.printer}-${record.itemId}`;
+                if (!stats[key]) {
+                    stats[key] = {
+                        printer: record.printer,
+                        itemName: record.itemName,
+                        totalUsed: 0,
+                        unit: record.unit
+                    };
+                }
+                stats[key].totalUsed += record.quantity;
+            });
+
+            return Object.values(stats).sort((a, b) => b.totalUsed - a.totalUsed);
+        }
+
+        function exportData() {
+            const exportData = {
+                inventory,
+                usageHistory,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `inventory-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        try {
+                            const importedData = JSON.parse(event.target.result);
+                            
+                            if (importedData.inventory && importedData.usageHistory) {
+                                inventory = importedData.inventory;
+                                usageHistory = importedData.usageHistory;
+                                saveData();
+                                render();
+                                alert('Data imported successfully!');
+                            } else {
+                                alert('Invalid backup file format.');
+                            }
+                        } catch (error) {
+                            console.error('Error importing data:', error);
+                            alert('Error importing data. Please check the file format.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function resetData() {
+            if (confirm('Are you sure you want to reset ALL data? This cannot be undone.')) {
+                inventory = JSON.parse(JSON.stringify(INITIAL_INVENTORY));
+                usageHistory = [];
+                localStorage.removeItem('printer-inventory');
+                localStorage.removeItem('printer-usage-history');
+                render();
+            }
+        }
+
+        function addNewItem() {
+            const section = document.getElementById('newItemSection').value;
+            const category = document.getElementById('newItemCategory').value;
+            const itemId = document.getElementById('newItemId').value.trim();
+            const itemName = document.getElementById('newItemName').value.trim();
+            const itemUnit = document.getElementById('newItemUnit').value.trim();
+            const itemStock = parseInt(document.getElementById('newItemStock').value) || 0;
+
+            if (!itemId || !itemName || !itemUnit) {
+                alert('Please fill in all required fields (ID, Name, and Unit)');
+                return;
+            }
+
+            // Check if item ID already exists
+            for (const [printer, categories] of Object.entries(inventory)) {
+                for (const [cat, items] of Object.entries(categories)) {
+                    if (items.find(item => item.id === itemId)) {
+                        alert('An item with this ID already exists. Please use a unique ID.');
+                        return;
+                    }
+                }
+            }
+
+            const newItem = {
+                id: itemId,
+                name: itemName,
+                stock: itemStock,
+                unit: itemUnit
+            };
+
+            // Add to the appropriate section and category
+            if (!inventory[section][category]) {
+                inventory[section][category] = [];
+            }
+            inventory[section][category].push(newItem);
+
+            saveData();
+            showAddItemModal = false;
+            selectedPrinter = section; // Switch to the section where we added the item
+            render();
+            alert('Item added successfully!');
+        }
+
+        function deleteItem(section, category, itemId) {
+            if (confirm('Are you sure you want to delete this item? This will also remove all usage history for this item.')) {
+                // Remove from inventory
+                const categoryItems = inventory[section][category];
+                const itemIndex = categoryItems.findIndex(item => item.id === itemId);
+                if (itemIndex !== -1) {
+                    categoryItems.splice(itemIndex, 1);
+                }
+
+                // Remove from usage history
+                usageHistory = usageHistory.filter(record => record.itemId !== itemId);
+
+                saveData();
+                render();
+            }
+        }
+
+        function render() {
+            const root = document.getElementById('root');
+            
+            let html = `
+            <div class="min-h-screen bg-slate-950 text-slate-100" style="font-family: 'DM Sans', system-ui, sans-serif">
+                <!-- Header -->
+                <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+                    <div class="max-w-7xl mx-auto px-6 py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center text-2xl">
+                                    📦
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl font-bold tracking-tight" style="font-family: 'Outfit', sans-serif">
+                                        Proofing Room Inventory
+                                    </h1>
+                                    <p class="text-sm text-slate-400">Track and manage your stock levels</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="brandpack-tools-launcher.html" 
+                                   class="px-4 py-2 rounded-lg font-medium bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all flex items-center gap-2"
+                                   title="Back to Launcher"
+                                >
+                                    <span>←</span>
+                                    <span>Launcher</span>
+                                </a>
+                                <button
+                                    onclick="currentView='inventory'; render()"
+                                    class="px-4 py-2 rounded-lg font-medium transition-all ${currentView === 'inventory' ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"
+                                >
+                                    Inventory
+                                </button>
+                                <button
+                                    onclick="currentView='stats'; render()"
+                                    class="px-4 py-2 rounded-lg font-medium transition-all ${currentView === 'stats' ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"
+                                >
+                                    Statistics
+                                </button>
+                                <button
+                                    onclick="showAddItemModal=true; render()"
+                                    class="px-4 py-2 rounded-lg font-medium bg-purple-900/30 text-purple-400 hover:bg-purple-900/50 transition-all ml-2"
+                                    title="Add new item"
+                                >
+                                    + Add Item
+                                </button>
+                                <button
+                                    onclick="exportData()"
+                                    class="px-4 py-2 rounded-lg font-medium bg-emerald-900/30 text-emerald-400 hover:bg-emerald-900/50 transition-all ml-2"
+                                    title="Export data to file"
+                                >
+                                    ↓ Export
+                                </button>
+                                <button
+                                    onclick="importData()"
+                                    class="px-4 py-2 rounded-lg font-medium bg-blue-900/30 text-blue-400 hover:bg-blue-900/50 transition-all"
+                                    title="Import data from file"
+                                >
+                                    ↑ Import
+                                </button>
+                                <button
+                                    onclick="resetData()"
+                                    class="px-4 py-2 rounded-lg font-medium bg-red-900/30 text-red-400 hover:bg-red-900/50 transition-all"
+                                    title="Reset all data"
+                                >
+                                    🔄
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="max-w-7xl mx-auto px-6 py-8">
+            `;
+
+            if (currentView === 'inventory') {
+                html += `
+                    <div class="space-y-8">
+                        <!-- Printer Selector -->
+                        <div class="bg-slate-900 rounded-xl border border-slate-800 p-6">
+                            <div class="flex items-center gap-4">
+                                <label class="text-lg font-semibold text-slate-200">Select Printer:</label>
+                                <select 
+                                    onchange="selectedPrinter=this.value; render()"
+                                    class="flex-1 max-w-md bg-slate-800 text-slate-100 px-4 py-3 rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none font-medium text-lg"
+                                >
+                                    ${Object.keys(inventory).map(printer => `
+                                        <option value="${printer}" ${selectedPrinter === printer ? 'selected' : ''}>
+                                            ${printer}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Info Banner -->
+                        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+                            <div class="flex items-start gap-3">
+                                <div class="text-blue-400 text-xl">ℹ️</div>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-blue-300 mb-1">Moving data between computers?</h3>
+                                    <p class="text-sm text-slate-300">
+                                        Use the <strong>↓ Export</strong> button to save your inventory data to a file. 
+                                        Then on your other computer, use <strong>↑ Import</strong> to load it back in. 
+                                        Keep the backup file safe!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selected Printer Inventory -->
+                        <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                            <div class="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4 border-b border-slate-700">
+                                <h2 class="text-xl font-bold text-cyan-400" style="font-family: 'Outfit', sans-serif">
+                                    ${selectedPrinter}
+                                </h2>
+                            </div>
+                `;
+
+                const categories = inventory[selectedPrinter];
+                for (const [category, items] of Object.entries(categories)) {
+                    html += `
+                        <div class="p-6 border-b border-slate-800 last:border-b-0">
+                            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+                                ${category}
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    `;
+
+                    for (const item of items) {
+                        const stockLevel = getStockLevel(item.stock);
+                        const stockColors = {
+                            empty: 'bg-red-500/20 text-red-400 border border-red-500/30',
+                            low: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30',
+                            good: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        };
+
+                        html += `
+                            <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700 hover:border-slate-600 transition-all">
+                                <div class="flex items-start justify-between mb-3">
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-slate-100">${item.name}</h4>
+                                        <p class="text-sm text-slate-400">${item.unit}</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="px-3 py-1 rounded-full text-sm font-bold ${stockColors[stockLevel]}">
+                                            ${item.stock}
+                                        </div>
+                                        <button
+                                            onclick="deleteItem('${selectedPrinter}', '${category}', '${item.id}')"
+                                            class="text-slate-500 hover:text-red-400 transition-colors"
+                                            title="Delete item"
+                                        >
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button
+                                        onclick="updateStock('${selectedPrinter}', '${category}', '${item.id}', -1)"
+                                        ${item.stock === 0 ? 'disabled' : ''}
+                                        class="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-400 disabled:opacity-30 disabled:cursor-not-allowed py-2 rounded-lg font-medium transition-all"
+                                    >
+                                        − Use
+                                    </button>
+                                    <button
+                                        onclick="updateStock('${selectedPrinter}', '${category}', '${item.id}', 1)"
+                                        class="flex-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 py-2 rounded-lg font-medium transition-all"
+                                    >
+                                        + Add
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Statistics view
+                const stats = getUsageStats();
+                const filtered = getFilteredUsage();
+
+                html += `
+                    <div class="space-y-6">
+                        <!-- Filter Buttons -->
+                        <div class="bg-slate-900 rounded-xl border border-slate-800 p-6">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-xl font-bold" style="font-family: 'Outfit', sans-serif">
+                                    Usage Statistics
+                                </h2>
+                                <div class="flex gap-2">
+                                    ${['week', 'month', 'year', 'all'].map(filter => `
+                                        <button
+                                            onclick="statsFilter='${filter}'; render()"
+                                            class="px-4 py-2 rounded-lg font-medium transition-all capitalize ${statsFilter === filter ? 'bg-cyan-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}"
+                                        >
+                                            ${filter === 'all' ? 'All Time' : `Past ${filter}`}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                                    📊 Items Used
+                                </h3>
+                `;
+
+                if (stats.length === 0) {
+                    html += `
+                        <div class="text-center py-12 text-slate-400">
+                            <div class="text-4xl mb-3 opacity-50">📉</div>
+                            <p>No usage data for this period</p>
+                        </div>
+                    `;
+                } else {
+                    const maxUsed = Math.max(...stats.map(s => s.totalUsed));
+                    html += `<div class="space-y-3">`;
+                    
+                    for (const stat of stats) {
+                        const percentage = (stat.totalUsed / maxUsed) * 100;
+                        html += `
+                            <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-slate-100">${stat.itemName}</div>
+                                        <div class="text-sm text-slate-400">${stat.printer}</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-2xl font-bold text-cyan-400">${stat.totalUsed}</div>
+                                        <div class="text-sm text-slate-400">${stat.unit}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-500" style="width: ${percentage}%"></div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    html += `</div>`;
+                }
+
+                html += `
+                            </div>
+                        </div>
+
+                        <!-- Recent Usage Log -->
+                        <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                                    🕐 Recent Activity
+                                </h3>
+                `;
+
+                if (filtered.length === 0) {
+                    html += `
+                        <div class="text-center py-8 text-slate-400">
+                            <p>No recent activity</p>
+                        </div>
+                    `;
+                } else {
+                    html += `<div class="space-y-2 max-h-96 overflow-y-auto">`;
+                    
+                    const recentRecords = filtered.slice().reverse().slice(0, 50);
+                    for (const record of recentRecords) {
+                        const date = new Date(record.timestamp);
+                        html += `
+                            <div class="flex items-center justify-between py-3 px-4 bg-slate-800/30 rounded-lg">
+                                <div class="flex-1">
+                                    <div class="font-medium text-slate-200">${record.itemName}</div>
+                                    <div class="text-sm text-slate-400">${record.printer}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-semibold text-red-400">
+                                        -${record.quantity} ${record.unit}
+                                    </div>
+                                    <div class="text-xs text-slate-500">
+                                        ${date.toLocaleDateString()} ${date.toLocaleTimeString()}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    html += `</div>`;
+                }
+
+                html += `
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                </main>
+
+                <!-- Add Item Modal -->
+                ${showAddItemModal ? `
+                    <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onclick="if(event.target === this) { showAddItemModal=false; render(); }">
+                        <div class="bg-slate-900 rounded-xl border border-slate-700 max-w-2xl w-full p-6" onclick="event.stopPropagation()">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-2xl font-bold text-cyan-400" style="font-family: 'Outfit', sans-serif">
+                                    Add New Item
+                                </h2>
+                                <button onclick="showAddItemModal=false; render()" class="text-slate-400 hover:text-slate-200 text-2xl">
+                                    ×
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Section</label>
+                                    <select id="newItemSection" onchange="updateCategoryOptions()" class="w-full bg-slate-800 text-slate-100 px-4 py-2 rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none">
+                                        <option value="Epson 9900/WT7900">Epson 9900/WT7900</option>
+                                        <option value="Epson 9070">Epson 9070</option>
+                                        <option value="Roland">Roland</option>
+                                        <option value="Materials">Materials</option>
+                                        <option value="Misc">Misc</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Category</label>
+                                    <select id="newItemCategory" class="w-full bg-slate-800 text-slate-100 px-4 py-2 rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none">
+                                        <option value="Shared Inks">Shared Inks</option>
+                                        <option value="Maintenance">Maintenance</option>
+                                        <option value="Media - 9900">Media - 9900</option>
+                                        <option value="Media - WT7900">Media - WT7900</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Product ID / Code *</label>
+                                    <input type="text" id="newItemId" placeholder="e.g., T636200 or CUSTOM-001" class="w-full bg-slate-800 text-slate-100 px-4 py-2 rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Item Name *</label>
+                                    <input type="text" id="newItemName" placeholder="e.g., Cleaning Solution or Custom Item" class="w-full bg-slate-800 text-slate-100 px-4 py-2 rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Unit Type *</label>
+                                    <input type="text" id="newItemUnit" placeholder="e.g., 700ml, roll, unit, box, pack" class="w-full bg-slate-800 text-slate-100 px-4 py-2 rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-300 mb-2">Initial Stock (optional)</label>
+                                    <input type="number" id="newItemStock" value="0" min="0" class="w-full bg-slate-800 text-slate-100 px-4 py-2 rounded-lg border border-slate-700 focus:border-cyan-500 focus:outline-none">
+                                </div>
+
+                                <div class="flex gap-3 pt-4">
+                                    <button onclick="addNewItem()" class="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white py-3 rounded-lg font-medium transition-all">
+                                        Add Item
+                                    </button>
+                                    <button onclick="showAddItemModal=false; render()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 py-3 rounded-lg font-medium transition-all">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+            `;
+
+            root.innerHTML = html;
+
+            // Update category dropdown based on selected section
+            if (showAddItemModal) {
+                window.updateCategoryOptions = function() {
+                    const section = document.getElementById('newItemSection').value;
+                    const categorySelect = document.getElementById('newItemCategory');
+                    const categories = Object.keys(inventory[section]);
+                    
+                    categorySelect.innerHTML = categories.map(cat => 
+                        `<option value="${cat}">${cat}</option>`
+                    ).join('');
+                };
+            }
+        }
+
+        // Initialize
+        loadData();
+        render();
+    </script>
+</body>
+</html>

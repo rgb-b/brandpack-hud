@@ -1,0 +1,71 @@
+/* DM Sans - Regular (400) */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./dm-sans-400.ttf') format('truetype');
+}
+
+/* DM Sans - Medium (500) */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./dm-sans-500.ttf') format('truetype');
+}
+
+/* DM Sans - Bold (700) */
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./dm-sans-700.ttf') format('truetype');
+}
+
+/* Outfit - Regular (400) */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./outfit-400.ttf') format('truetype');
+}
+
+/* Outfit - SemiBold (600) */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./outfit-600.ttf') format('truetype');
+}
+
+/* Outfit - Bold (700) */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./outfit-700.ttf') format('truetype');
+}
+
+/* JetBrains Mono - Regular (400) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./jetbrains-mono-400.ttf') format('truetype');
+}
+
+/* JetBrains Mono - SemiBold (600) */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./jetbrains-mono-600.ttf') format('truetype');
+}

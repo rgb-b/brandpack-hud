@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brandpack Tools Launcher</title>
+    <link rel="stylesheet" href="../../shared/styles/theme.css">
+    <link rel="stylesheet" href="../../shared/styles/base.css">
+    <link rel="stylesheet" href="../../shared/styles/components.css">
+    <style>
+        body {
+            min-height: 100vh;
+            padding: var(--spacing-xl);
+        }
+
+        .launcher-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .launcher-header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+            padding: var(--spacing-2xl);
+            background: var(--gradient-card);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .launcher-header h1 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .launcher-header p {
+            color: var(--color-text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: var(--spacing-md) var(--spacing-xl);
+            background: var(--gradient-card);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .tab-btn:hover {
+            background: var(--color-bg-hover);
+            border-color: var(--color-primary-light);
+            color: var(--color-primary-light);
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tool Cards */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .tool-card {
+            background: var(--gradient-card);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            border-color: var(--color-primary-light);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .tool-title {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .tool-desc {
+            color: var(--color-text-secondary);
+            font-size: var(--text-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .tool-launch {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform var(--transition-fast);
+        }
+
+        .tool-launch:hover {
+            transform: scale(1.05);
+        }
+
+        /* Stats */
+        .stats-section {
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .section-title {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            color: var(--color-text-primary);
+        }
+
+        .analytics-card {
+            background: var(--gradient-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .analytics-title {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--color-primary-light);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .stat-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+
+        .stat-name {
+            font-size: var(--text-sm);
+            color: var(--color-text-muted);
+        }
+
+        .stat-number {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--color-primary-light);
+            font-family: var(--font-mono);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="launcher-container">
+        <!-- Header -->
+        <div class="launcher-header">
+            <h1>Brandpack Tools</h1>
+            <p>Professional toolkit for Brandpack Australasia proofing operations</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="window.launcherApp.switchView('tools')">🚀 Tools</button>
+            <button class="tab-btn" onclick="window.launcherApp.switchView('analytics')">📊 Analytics</button>
+        </div>
+
+        <!-- Tools View -->
+        <div id="toolsView" class="view active">
+            <div class="tools-grid">
+                <div class="tool-card" onclick="window.location.href='inventory.html'">
+                    <div class="tool-icon">📦</div>
+                    <div class="tool-title">Inventory System</div>
+                    <div class="tool-desc">Track printer supplies, inks, media, and maintenance items across all machines</div>
+                    <a href="inventory.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                </div>
+
+                <div class="tool-card" onclick="window.location.href='productivity.html'">
+                    <div class="tool-icon">⏱️</div>
+                    <div class="tool-title">Productivity Tracker</div>
+                    <div class="tool-desc">Monitor daily activities, time allocation, and task management</div>
+                    <a href="productivity.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                </div>
+
+                <div class="tool-card" onclick="window.location.href='pantone.html'">
+                    <div class="tool-icon">🎨</div>
+                    <div class="tool-title">Pantone Tracker</div>
+                    <div class="tool-desc">Manage and track matched Pantone colors for Roland printing</div>
+                    <a href="pantone.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                </div>
+
+                <div class="tool-card" onclick="window.location.href='converter.html'">
+                    <div class="tool-icon">🔀</div>
+                    <div class="tool-title">LAB-CMYK Converter</div>
+                    <div class="tool-desc">Convert between LAB and CMYK color spaces with visual preview</div>
+                    <a href="converter.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                </div>
+
+                <div class="tool-card" onclick="window.location.href='maintenance.html'">
+                    <div class="tool-icon">🔧</div>
+                    <div class="tool-title">Maintenance Tracker</div>
+                    <div class="tool-desc">Log issues, track maintenance tasks, and schedule technician visits</div>
+                    <a href="maintenance.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="window.launcherApp.exportAllData()">💾 Export All Data</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Import Data</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="window.launcherApp.importData(event)">
+            </div>
+        </div>
+
+        <!-- Analytics View -->
+        <div id="analyticsView" class="view">
+            <div class="stats-section">
+                <h2 class="section-title">Inventory Analytics</h2>
+                <div class="analytics-card">
+                    <h3 class="analytics-title">Inventory Overview</h3>
+                    <div class="stat-items" id="inventoryAnalytics">
+                        <div style="color: var(--color-text-muted);">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2 class="section-title">Productivity Analytics</h2>
+                <div class="analytics-card">
+                    <h3 class="analytics-title">Time Tracking</h3>
+                    <div class="stat-items" id="productivityAnalytics">
+                        <div style="color: var(--color-text-muted);">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2 class="section-title">Pantone Analytics</h2>
+                <div class="analytics-card">
+                    <h3 class="analytics-title">Color Database</h3>
+                    <div class="stat-items" id="pantoneAnalytics">
+                        <div style="color: var(--color-text-muted);">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2 class="section-title">Maintenance Analytics</h2>
+                <div class="analytics-card">
+                    <h3 class="analytics-title">System Health</h3>
+                    <div class="stat-items" id="maintenanceAnalytics">
+                        <div style="color: var(--color-text-muted);">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2 class="section-title">Top Used Items</h2>
+                <div class="analytics-card">
+                    <div class="stat-items" id="topUsedItems">
+                        <div style="color: var(--color-text-muted);">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h2 class="section-title">Top Tasks</h2>
+                <div class="analytics-card">
+                    <div class="stat-items" id="topTasks">
+                        <div style="color: var(--color-text-muted);">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./launcher.js"></script>
+</body>
+</html>

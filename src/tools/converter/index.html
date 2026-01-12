@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB ↔ CMYK Converter - Brandpack Tools</title>
+    <link rel="stylesheet" href="../../shared/styles/theme.css">
+    <link rel="stylesheet" href="../../shared/styles/base.css">
+    <link rel="stylesheet" href="../../shared/styles/components.css">
+    <style>
+        .converter-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .input-wrapper label {
+            font-size: var(--text-xs);
+            color: var(--color-text-muted);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        input[type="number"] {
+            font-family: var(--font-mono);
+        }
+
+        .range-info {
+            font-size: var(--text-xs);
+            color: var(--color-text-muted);
+            margin-top: var(--spacing-xs);
+        }
+
+        .color-preview {
+            background: var(--gradient-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .color-preview h2 {
+            font-size: var(--text-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--color-primary-light);
+        }
+
+        .color-box {
+            width: 100%;
+            height: 200px;
+            border-radius: var(--radius-lg);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: var(--spacing-md);
+            transition: all var(--transition-slow);
+        }
+
+        .color-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .info-item {
+            background: var(--color-bg-card);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-label {
+            font-size: var(--text-xs);
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .info-value {
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            color: var(--color-text-primary);
+        }
+
+        .actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+
+        .actions button {
+            flex: 1;
+        }
+
+        .notes {
+            background: rgba(255, 140, 66, 0.1);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+            font-size: var(--text-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .notes strong {
+            color: var(--color-primary-light);
+        }
+
+        @media (max-width: 768px) {
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .color-box {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="converter-container">
+        <app-header tool-name="LAB ↔ CMYK Converter"></app-header>
+
+        <p class="subtitle text-center mb-4">Real-time color space conversion for print workflows</p>
+
+        <div class="converter-grid">
+            <!-- LAB Input -->
+            <div class="card">
+                <h2>LAB Values</h2>
+                <div class="form-group">
+                    <div class="input-row">
+                        <div class="input-wrapper">
+                            <label class="form-label">L* (Lightness)</label>
+                            <input type="number" id="lab-l" class="form-input" min="0" max="100" step="0.1" value="50">
+                            <div class="range-info">0-100</div>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="form-label">a* (Green-Red)</label>
+                            <input type="number" id="lab-a" class="form-input" min="-128" max="127" step="0.1" value="0">
+                            <div class="range-info">-128 to 127</div>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="form-label">b* (Blue-Yellow)</label>
+                            <input type="number" id="lab-b" class="form-input" min="-128" max="127" step="0.1" value="0">
+                            <div class="range-info">-128 to 127</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CMYK Input -->
+            <div class="card">
+                <h2>CMYK Values</h2>
+                <div class="form-group">
+                    <div class="input-row">
+                        <div class="input-wrapper">
+                            <label class="form-label">C (Cyan)</label>
+                            <input type="number" id="cmyk-c" class="form-input" min="0" max="100" step="1" value="0">
+                            <div class="range-info">0-100%</div>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="form-label">M (Magenta)</label>
+                            <input type="number" id="cmyk-m" class="form-input" min="0" max="100" step="1" value="0">
+                            <div class="range-info">0-100%</div>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="form-label">Y (Yellow)</label>
+                            <input type="number" id="cmyk-y" class="form-input" min="0" max="100" step="1" value="0">
+                            <div class="range-info">0-100%</div>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="form-label">K (Black)</label>
+                            <input type="number" id="cmyk-k" class="form-input" min="0" max="100" step="1" value="50">
+                            <div class="range-info">0-100%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Preview -->
+        <div class="color-preview">
+            <h2>Color Preview</h2>
+            <div class="color-box" id="colorBox"></div>
+            <div class="color-info">
+                <div class="info-item">
+                    <div class="info-label">RGB (Screen)</div>
+                    <div class="info-value" id="rgbValue">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Hex Code</div>
+                    <div class="info-value" id="hexValue">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn btn-primary" id="copyBtn">📋 Copy All Values</button>
+            <button class="btn btn-secondary" id="resetBtn">🔄 Reset</button>
+        </div>
+
+        <!-- Notes -->
+        <div class="notes">
+            <strong>Note:</strong> LAB to CMYK conversion uses standard ICC color profile assumptions.
+            Actual print results may vary depending on your printer profile, substrate, and ink characteristics.
+            For critical color matching, always verify with physical proofs.
+        </div>
+
+        <app-footer back-url="launcher.html"></app-footer>
+    </div>
+
+    <script type="module" src="./converter.js"></script>
+</body>
+</html>
