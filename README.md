@@ -16,33 +16,33 @@ Professional toolkit for Brandpack Australasia proofing operations.
 
 ```
 brandpack-tools/
-├── index.html                      # Main entry point (redirects to dashboard)
-├── src/
+├── index.html                      # 🏠 Main entry point (open this file!)
+├── README.md                       # Project documentation
+├── DEVELOPMENT.md                  # Developer guide
+├── src/                            # Source code
 │   ├── tools/                      # All tool applications
-│   │   ├── launcher/               # Dashboard/Homepage
-│   │   │   ├── index.html
-│   │   │   └── launcher.js
-│   │   ├── inventory/              # Inventory System
-│   │   │   ├── index.html
-│   │   │   └── inventory.js
-│   │   ├── productivity/           # Productivity Tracker
-│   │   │   ├── index.html
-│   │   │   └── productivity.js
-│   │   ├── pantone/                # Pantone Tracker
-│   │   │   ├── index.html
-│   │   │   └── pantone.js
-│   │   ├── converter/              # LAB-CMYK Converter
-│   │   │   ├── index.html
-│   │   │   └── converter.js
-│   │   └── maintenance/            # Maintenance Tracker
-│   │       ├── index.html
-│   │       └── maintenance.js
+│   │   ├── launcher/               # 📊 Dashboard/Homepage
+│   │   ├── inventory/              # 📦 Inventory System
+│   │   ├── productivity/           # ⏱️ Productivity Tracker
+│   │   ├── pantone/                # 🎨 Pantone Tracker
+│   │   ├── converter/              # 🔄 LAB-CMYK Converter
+│   │   └── maintenance/            # 🔧 Maintenance Tracker
 │   └── shared/                     # Shared resources
 │       ├── styles/                 # CSS files
 │       ├── utils/                  # Utility functions
 │       ├── components/             # Reusable components
 │       └── constants.js            # App-wide constants
-└── scripts/                        # Build scripts
+├── docs/                           # 📚 Documentation files
+│   ├── Daily tasks.txt
+│   ├── Maintenance.txt
+│   ├── QUICK-START.txt
+│   └── README.txt
+├── archive/                        # 📦 Old files & backups
+│   ├── Pantone library spreadsheets
+│   ├── Previous data backups
+│   └── Legacy productivity tracker
+├── scripts/                        # Build and utility scripts
+└── package.json                    # Project dependencies
 ```
 
 ## 🛠️ Available Tools
@@ -104,7 +104,7 @@ All data is stored in browser localStorage:
 
 When pulling updates from git:
 ```bash
-git pull origin main
+git pull origin master
 ```
 
 Then simply refresh the browser - no build step required!
