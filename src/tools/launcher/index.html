@@ -3,34 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brandpack Tools Launcher</title>
+    <title>Brandpack Dashboard</title>
     <link rel="stylesheet" href="../../shared/styles/theme.css">
     <link rel="stylesheet" href="../../shared/styles/base.css">
     <link rel="stylesheet" href="../../shared/styles/components.css">
     <style>
         body {
             min-height: 100vh;
-            padding: var(--spacing-xl);
+            padding: var(--spacing-lg);
         }
 
-        .launcher-container {
-            max-width: 1200px;
+        .dashboard-container {
+            max-width: 1600px;
             margin: 0 auto;
         }
 
-        /* Header */
-        .launcher-header {
-            text-align: center;
-            margin-bottom: var(--spacing-2xl);
-            padding: var(--spacing-2xl);
+        /* Hero Section */
+        .hero-section {
             background: var(--gradient-card);
             border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-xl);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
         }
 
-        .launcher-header h1 {
-            font-family: var(--font-display);
-            font-size: 2.5rem;
+        .greeting {
+            font-size: 2rem;
+            font-weight: 700;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -38,70 +38,400 @@
             margin-bottom: var(--spacing-sm);
         }
 
-        .launcher-header p {
-            color: var(--color-text-secondary);
-            font-size: 1.1rem;
+        .live-clock {
+            font-family: var(--font-mono);
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-xs);
+            letter-spacing: 0.05em;
         }
 
-        /* Navigation Tabs */
-        .nav-tabs {
-            display: flex;
+        .live-date {
+            font-size: 1.2rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* Quick Stats Row */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: var(--spacing-md);
             margin-bottom: var(--spacing-xl);
-            justify-content: center;
-            flex-wrap: wrap;
         }
 
-        .tab-btn {
-            padding: var(--spacing-md) var(--spacing-xl);
+        .stat-card {
             background: var(--gradient-card);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-md);
-            color: var(--color-text-secondary);
-            font-weight: 600;
-            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
             transition: all var(--transition-base);
         }
 
-        .tab-btn:hover {
-            background: var(--color-bg-hover);
+        .stat-card:hover {
+            transform: translateY(-2px);
             border-color: var(--color-primary-light);
+        }
+
+        .stat-label {
+            font-size: var(--text-sm);
+            color: var(--color-text-muted);
+            margin-bottom: var(--spacing-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary-light);
+            font-family: var(--font-mono);
+        }
+
+        .stat-subtext {
+            font-size: var(--text-xs);
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .widget {
+            background: var(--gradient-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .widget-title {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .widget-action {
+            font-size: var(--text-sm);
+            color: var(--color-primary-light);
+            cursor: pointer;
+            transition: opacity var(--transition-fast);
+        }
+
+        .widget-action:hover {
+            opacity: 0.8;
+        }
+
+        /* Calendar Widget */
+        .calendar-widget {
+            grid-column: span 6;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: var(--spacing-xs);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .calendar-nav-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--color-bg-hover);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .calendar-nav-btn:hover {
+            background: var(--color-primary-light);
+        }
+
+        .calendar-day-header {
+            font-size: var(--text-xs);
+            color: var(--color-text-muted);
+            text-align: center;
+            padding: var(--spacing-xs);
+            font-weight: 600;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-sm);
+            font-size: var(--text-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: var(--color-bg-hover);
+        }
+
+        .calendar-day.today {
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 700;
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+        }
+
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
+            background: var(--color-warning);
+            border-radius: 50%;
+        }
+
+        .calendar-day.has-event.today::after {
+            background: white;
+        }
+
+        /* Todo Widget */
+        .todo-widget {
+            grid-column: span 6;
+        }
+
+        .todo-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            background: var(--color-bg-hover);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .todo-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .todo-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--color-primary);
+        }
+
+        .todo-content {
+            flex: 1;
+        }
+
+        .todo-text {
+            color: var(--color-text-primary);
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .todo-delete {
+            color: var(--color-error);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .todo-item:hover .todo-delete {
+            opacity: 1;
+        }
+
+        .todo-input-container {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .todo-input {
+            flex: 1;
+            padding: var(--spacing-sm);
+            background: var(--color-bg-hover);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+        }
+
+        .todo-input:focus {
+            outline: none;
+            border-color: var(--color-primary-light);
+        }
+
+        /* Resource Stats Widget */
+        .resource-widget {
+            grid-column: span 4;
+        }
+
+        .resource-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            background: var(--color-bg-hover);
+            border-radius: var(--radius-md);
+        }
+
+        .resource-label {
+            color: var(--color-text-secondary);
+        }
+
+        .resource-value {
+            font-weight: 700;
             color: var(--color-primary-light);
         }
 
-        .tab-btn.active {
+        .resource-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            margin-top: var(--spacing-xs);
+        }
+
+        .resource-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            transition: width var(--transition-base);
+        }
+
+        /* Activity Feed Widget */
+        .activity-widget {
+            grid-column: span 4;
+        }
+
+        .activity-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            border-left: 2px solid var(--color-primary-light);
+            background: var(--color-bg-hover);
+            border-radius: var(--radius-md);
+        }
+
+        .activity-icon {
+            font-size: 1.2rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            color: var(--color-text-primary);
+            font-size: var(--text-sm);
+        }
+
+        .activity-time {
+            color: var(--color-text-muted);
+            font-size: var(--text-xs);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Quick Actions Widget */
+        .actions-widget {
+            grid-column: span 4;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+        }
+
+        .action-btn {
+            padding: var(--spacing-md);
+            background: var(--color-bg-hover);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+        }
+
+        .action-btn:hover {
             background: var(--gradient-primary);
             border-color: transparent;
-            color: white;
+            transform: translateY(-2px);
         }
 
-        /* Views */
-        .view {
-            display: none;
+        .action-icon {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xs);
         }
 
-        .view.active {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
+        .action-label {
+            font-size: var(--text-sm);
+            font-weight: 600;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Tools Section */
+        .tools-section {
+            margin-top: var(--spacing-2xl);
         }
 
-        /* Tool Cards */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
         }
 
         .tool-card {
@@ -120,12 +450,12 @@
         }
 
         .tool-icon {
-            font-size: 3rem;
+            font-size: 2.5rem;
             margin-bottom: var(--spacing-md);
         }
 
         .tool-title {
-            font-size: var(--text-2xl);
+            font-size: var(--text-xl);
             font-weight: 700;
             color: var(--color-text-primary);
             margin-bottom: var(--spacing-sm);
@@ -134,215 +464,213 @@
         .tool-desc {
             color: var(--color-text-secondary);
             font-size: var(--text-sm);
-            margin-bottom: var(--spacing-md);
         }
 
-        .tool-launch {
-            display: inline-block;
-            padding: var(--spacing-sm) var(--spacing-lg);
-            background: var(--gradient-primary);
-            color: white;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform var(--transition-fast);
+        /* Scrollbar Styling */
+        .todo-list::-webkit-scrollbar,
+        .activity-list::-webkit-scrollbar {
+            width: 6px;
         }
 
-        .tool-launch:hover {
-            transform: scale(1.05);
+        .todo-list::-webkit-scrollbar-track,
+        .activity-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
         }
 
-        /* Stats */
-        .stats-section {
-            margin-bottom: var(--spacing-2xl);
+        .todo-list::-webkit-scrollbar-thumb,
+        .activity-list::-webkit-scrollbar-thumb {
+            background: var(--color-primary-light);
+            border-radius: var(--radius-sm);
         }
 
-        .section-title {
-            font-size: var(--text-2xl);
-            font-weight: 700;
-            margin-bottom: var(--spacing-lg);
-            color: var(--color-text-primary);
-        }
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .calendar-widget,
+            .todo-widget {
+                grid-column: span 12;
+            }
 
-        .analytics-card {
-            background: var(--gradient-card);
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .analytics-title {
-            font-size: var(--text-lg);
-            font-weight: 600;
-            color: var(--color-primary-light);
-            margin-bottom: var(--spacing-md);
-        }
-
-        .stat-items {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: var(--spacing-md);
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-xs);
-        }
-
-        .stat-name {
-            font-size: var(--text-sm);
-            color: var(--color-text-muted);
-        }
-
-        .stat-number {
-            font-size: var(--text-xl);
-            font-weight: 700;
-            color: var(--color-primary-light);
-            font-family: var(--font-mono);
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: var(--spacing-md);
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: var(--spacing-xl);
+            .resource-widget,
+            .activity-widget,
+            .actions-widget {
+                grid-column: span 6;
+            }
         }
 
         @media (max-width: 768px) {
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .resource-widget,
+            .activity-widget,
+            .actions-widget {
+                grid-column: span 12;
+            }
+
             .tools-grid {
                 grid-template-columns: 1fr;
             }
 
-            .nav-tabs {
-                flex-direction: column;
+            .live-clock {
+                font-size: 2.5rem;
             }
 
-            .tab-btn {
-                width: 100%;
+            .greeting {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="launcher-container">
-        <!-- Header -->
-        <div class="launcher-header">
-            <h1>Brandpack Tools</h1>
-            <p>Professional toolkit for Brandpack Australasia proofing operations</p>
+    <div class="dashboard-container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="greeting" id="greeting">Good Morning</div>
+            <div class="live-clock" id="liveClock">00:00:00</div>
+            <div class="live-date" id="liveDate">Loading...</div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="window.launcherApp.switchView('tools')">🚀 Tools</button>
-            <button class="tab-btn" onclick="window.launcherApp.switchView('analytics')">📊 Analytics</button>
+        <!-- Quick Stats Row -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-label">Inventory Items</div>
+                <div class="stat-value" id="inventoryCount">0</div>
+                <div class="stat-subtext" id="inventorySubtext">Loading...</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Today's Time</div>
+                <div class="stat-value" id="todayTime">0h 0m</div>
+                <div class="stat-subtext" id="timeSubtext">Loading...</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Issues</div>
+                <div class="stat-value" id="activeIssues">0</div>
+                <div class="stat-subtext" id="issuesSubtext">Loading...</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pantone Colors</div>
+                <div class="stat-value" id="pantoneCount">0</div>
+                <div class="stat-subtext" id="pantoneSubtext">Loading...</div>
+            </div>
         </div>
 
-        <!-- Tools View -->
-        <div id="toolsView" class="view active">
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Calendar Widget -->
+            <div class="widget calendar-widget">
+                <div class="widget-header">
+                    <div class="widget-title">📅 Calendar</div>
+                </div>
+                <div class="calendar-header">
+                    <button class="calendar-nav-btn" onclick="window.dashboardApp.previousMonth()">←</button>
+                    <div id="calendarMonth" style="font-weight: 600; color: var(--color-text-primary);"></div>
+                    <button class="calendar-nav-btn" onclick="window.dashboardApp.nextMonth()">→</button>
+                </div>
+                <div class="calendar">
+                    <div class="calendar-day-header">Sun</div>
+                    <div class="calendar-day-header">Mon</div>
+                    <div class="calendar-day-header">Tue</div>
+                    <div class="calendar-day-header">Wed</div>
+                    <div class="calendar-day-header">Thu</div>
+                    <div class="calendar-day-header">Fri</div>
+                    <div class="calendar-day-header">Sat</div>
+                    <div id="calendarDays"></div>
+                </div>
+            </div>
+
+            <!-- Todo Widget -->
+            <div class="widget todo-widget">
+                <div class="widget-header">
+                    <div class="widget-title">✓ To-Do List</div>
+                    <div class="widget-action" onclick="window.dashboardApp.clearCompleted()">Clear Completed</div>
+                </div>
+                <div class="todo-list" id="todoList"></div>
+                <div class="todo-input-container">
+                    <input type="text" class="todo-input" id="todoInput" placeholder="Add a new task..." onkeypress="if(event.key==='Enter') window.dashboardApp.addTodo()">
+                    <button class="btn btn-primary" onclick="window.dashboardApp.addTodo()">Add</button>
+                </div>
+            </div>
+
+            <!-- Resource Stats Widget -->
+            <div class="widget resource-widget">
+                <div class="widget-header">
+                    <div class="widget-title">💾 System Overview</div>
+                </div>
+                <div id="resourceStats"></div>
+            </div>
+
+            <!-- Activity Feed Widget -->
+            <div class="widget activity-widget">
+                <div class="widget-header">
+                    <div class="widget-title">📊 Recent Activity</div>
+                </div>
+                <div class="activity-list" id="activityFeed"></div>
+            </div>
+
+            <!-- Quick Actions Widget -->
+            <div class="widget actions-widget">
+                <div class="widget-header">
+                    <div class="widget-title">⚡ Quick Actions</div>
+                </div>
+                <div class="action-grid">
+                    <button class="action-btn" onclick="window.location.href='maintenance.html'">
+                        <div class="action-icon">🔧</div>
+                        <div class="action-label">Log Issue</div>
+                    </button>
+                    <button class="action-btn" onclick="window.location.href='inventory.html'">
+                        <div class="action-icon">📦</div>
+                        <div class="action-label">Update Stock</div>
+                    </button>
+                    <button class="action-btn" onclick="window.location.href='productivity.html'">
+                        <div class="action-icon">⏱️</div>
+                        <div class="action-label">Track Time</div>
+                    </button>
+                    <button class="action-btn" onclick="window.launcherApp.exportAllData()">
+                        <div class="action-icon">💾</div>
+                        <div class="action-label">Export Data</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tools Section -->
+        <div class="tools-section">
+            <div class="section-header">
+                <div class="section-title">🚀 Tools</div>
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Import Data</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="window.launcherApp.importData(event)">
+            </div>
             <div class="tools-grid">
                 <div class="tool-card" onclick="window.location.href='inventory.html'">
                     <div class="tool-icon">📦</div>
                     <div class="tool-title">Inventory System</div>
-                    <div class="tool-desc">Track printer supplies, inks, media, and maintenance items across all machines</div>
-                    <a href="inventory.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                    <div class="tool-desc">Track printer supplies, inks, media, and maintenance items</div>
                 </div>
 
                 <div class="tool-card" onclick="window.location.href='productivity.html'">
                     <div class="tool-icon">⏱️</div>
                     <div class="tool-title">Productivity Tracker</div>
-                    <div class="tool-desc">Monitor daily activities, time allocation, and task management</div>
-                    <a href="productivity.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                    <div class="tool-desc">Monitor daily activities and time allocation</div>
                 </div>
 
                 <div class="tool-card" onclick="window.location.href='pantone.html'">
                     <div class="tool-icon">🎨</div>
                     <div class="tool-title">Pantone Tracker</div>
-                    <div class="tool-desc">Manage and track matched Pantone colors for Roland printing</div>
-                    <a href="pantone.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                    <div class="tool-desc">Manage matched Pantone colors for Roland printing</div>
                 </div>
 
                 <div class="tool-card" onclick="window.location.href='converter.html'">
                     <div class="tool-icon">🔀</div>
                     <div class="tool-title">LAB-CMYK Converter</div>
-                    <div class="tool-desc">Convert between LAB and CMYK color spaces with visual preview</div>
-                    <a href="converter.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
+                    <div class="tool-desc">Convert between LAB and CMYK color spaces</div>
                 </div>
 
                 <div class="tool-card" onclick="window.location.href='maintenance.html'">
                     <div class="tool-icon">🔧</div>
                     <div class="tool-title">Maintenance Tracker</div>
-                    <div class="tool-desc">Log issues, track maintenance tasks, and schedule technician visits</div>
-                    <a href="maintenance.html" class="tool-launch" onclick="event.stopPropagation()">Launch →</a>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="window.launcherApp.exportAllData()">💾 Export All Data</button>
-                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Import Data</button>
-                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="window.launcherApp.importData(event)">
-            </div>
-        </div>
-
-        <!-- Analytics View -->
-        <div id="analyticsView" class="view">
-            <div class="stats-section">
-                <h2 class="section-title">Inventory Analytics</h2>
-                <div class="analytics-card">
-                    <h3 class="analytics-title">Inventory Overview</h3>
-                    <div class="stat-items" id="inventoryAnalytics">
-                        <div style="color: var(--color-text-muted);">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-section">
-                <h2 class="section-title">Productivity Analytics</h2>
-                <div class="analytics-card">
-                    <h3 class="analytics-title">Time Tracking</h3>
-                    <div class="stat-items" id="productivityAnalytics">
-                        <div style="color: var(--color-text-muted);">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-section">
-                <h2 class="section-title">Pantone Analytics</h2>
-                <div class="analytics-card">
-                    <h3 class="analytics-title">Color Database</h3>
-                    <div class="stat-items" id="pantoneAnalytics">
-                        <div style="color: var(--color-text-muted);">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-section">
-                <h2 class="section-title">Maintenance Analytics</h2>
-                <div class="analytics-card">
-                    <h3 class="analytics-title">System Health</h3>
-                    <div class="stat-items" id="maintenanceAnalytics">
-                        <div style="color: var(--color-text-muted);">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-section">
-                <h2 class="section-title">Top Used Items</h2>
-                <div class="analytics-card">
-                    <div class="stat-items" id="topUsedItems">
-                        <div style="color: var(--color-text-muted);">Loading...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stats-section">
-                <h2 class="section-title">Top Tasks</h2>
-                <div class="analytics-card">
-                    <div class="stat-items" id="topTasks">
-                        <div style="color: var(--color-text-muted);">Loading...</div>
-                    </div>
+                    <div class="tool-desc">Log issues and schedule maintenance tasks</div>
                 </div>
             </div>
         </div>
