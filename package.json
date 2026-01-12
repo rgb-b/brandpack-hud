@@ -20,6 +20,7 @@
   "license": "ISC",
   "devDependencies": {
     "vite": "^7.3.1",
-    "vite-plugin-singlefile": "^2.3.0"
+    "vite-plugin-singlefile": "^2.3.0",
+    "xlsx": "^0.18.5"
   }
 }
