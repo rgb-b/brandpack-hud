@@ -19,6 +19,10 @@ export const STORAGE_KEYS = {
   // Maintenance Tracker
   MAINTENANCE: 'proofing-maintenance',
 
+  // Dashboard / Launcher
+  DASHBOARD_TODOS: 'dashboard-todos',
+  DASHBOARD_ACTIVITY: 'dashboard-activity',
+
   // Master data (for export/import)
   MASTER_DATA: 'brandpack-tools-master'
 }
