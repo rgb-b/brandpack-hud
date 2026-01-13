@@ -335,6 +335,819 @@
         </div>
     </div>
 
-    <script type="module" src="./inventory.js"></script>
+    <script>
+// ============================================================================
+// INLINED SHARED UTILITIES
+// ============================================================================
+
+// storage.js
+const storage = {
+  get(key, defaultValue = null) {
+    try {
+      const item = localStorage.getItem(key)
+      if (item === null) {
+        return defaultValue
+      }
+      return JSON.parse(item)
+    } catch (error) {
+      console.error(`Error reading from localStorage [${key}]:`, error)
+      return defaultValue
+    }
+  },
+
+  set(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value))
+      return true
+    } catch (error) {
+      console.error(`Error writing to localStorage [${key}]:`, error)
+
+      if (error.name === 'QuotaExceededError') {
+        console.error('localStorage quota exceeded. Consider clearing old data.')
+      }
+
+      return false
+    }
+  },
+
+  remove(key) {
+    try {
+      localStorage.removeItem(key)
+    } catch (error) {
+      console.error(`Error removing from localStorage [${key}]:`, error)
+    }
+  },
+
+  clear() {
+    try {
+      localStorage.clear()
+    } catch (error) {
+      console.error('Error clearing localStorage:', error)
+    }
+  },
+
+  has(key) {
+    return localStorage.getItem(key) !== null
+  },
+
+  keys() {
+    return Object.keys(localStorage)
+  }
+}
+
+// datetime.js
+function formatDate(date = new Date()) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function formatTime(date = new Date()) {
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+  return `${hours}:${minutes}:${seconds}`
+}
+
+function formatDateTime(date = new Date()) {
+  return `${formatDate(date)} ${formatTime(date)}`
+}
+
+function formatDuration(seconds) {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = seconds % 60
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+}
+
+function parseDate(dateString) {
+  try {
+    const date = new Date(dateString)
+    return isNaN(date.getTime()) ? null : date
+  } catch {
+    return null
+  }
+}
+
+function daysBetween(date1, date2) {
+  const oneDay = 24 * 60 * 60 * 1000
+  return Math.round(Math.abs((date1 - date2) / oneDay))
+}
+
+function isOlderThanYears(dateString, years = 5) {
+  const date = parseDate(dateString)
+  if (!date) return false
+
+  const yearsAgo = new Date()
+  yearsAgo.setFullYear(yearsAgo.getFullYear() - years)
+  return date < yearsAgo
+}
+
+// constants.js
+const VERSION = '2.0.0'
+
+const STORAGE_KEYS = {
+  INVENTORY: 'printer-inventory',
+  USAGE_HISTORY: 'printer-usage-history',
+  TASKS: 'tasks',
+  HISTORY: 'history',
+  DAILY_TOTALS: 'dailyTotalsByDate',
+  TASK_TOTALS: 'taskTotals',
+  PANTONE_COLORS: 'pantone-colors',
+  MAINTENANCE: 'proofing-maintenance',
+  DASHBOARD_TODOS: 'dashboard-todos',
+  DASHBOARD_ACTIVITY: 'dashboard-activity',
+  MASTER_DATA: 'brandpack-tools-master'
+}
+
+const TOOLS = {
+  LAUNCHER: 'Brandpack Tools Launcher',
+  INVENTORY: 'Inventory System',
+  PRODUCTIVITY: 'Productivity Tracker',
+  PANTONE: 'Pantone Tracker',
+  CONVERTER: 'LAB-CMYK Converter',
+  MAINTENANCE: 'Maintenance Tracker'
+}
+
+const TOOL_PATHS = {
+  LAUNCHER: './launcher.html',
+  INVENTORY: './inventory.html',
+  PRODUCTIVITY: './productivity.html',
+  PANTONE: './pantone.html',
+  CONVERTER: './converter.html',
+  MAINTENANCE: './maintenance.html'
+}
+
+const PRINTERS = {
+  EPSON_9900: 'Epson 9900/WT7900',
+  EPSON_9070: 'Epson 9070',
+  ROLAND: 'Roland',
+  CANON: 'Canon'
+}
+
+const STATUS_CATEGORIES = {
+  AVAILABLE: 'available',
+  WORKING: 'working',
+  UNAVAILABLE: 'unavailable'
+}
+
+const INITIAL_INVENTORY = {
+  'Epson 9900/WT7900': {
+    'Shared Inks': [
+      { id: 'T636200', name: 'T636200 - Cyan', stock: 0, unit: '700ml' },
+      { id: 'T636500', name: 'T636500 - Light Cyan', stock: 0, unit: '700ml' },
+      { id: 'T636300', name: 'T636300 - Vivid Magenta', stock: 0, unit: '700ml' },
+      { id: 'T636600', name: 'T636600 - Vivid Light Magenta', stock: 0, unit: '700ml' },
+      { id: 'T636400', name: 'T636400 - Yellow', stock: 0, unit: '700ml' },
+      { id: 'T636B00', name: 'T636B00 - Green', stock: 0, unit: '700ml' },
+      { id: 'T636A00', name: 'T636A00 - Orange', stock: 0, unit: '700ml' },
+      { id: 'T636100', name: 'T636100 - Photo Black', stock: 0, unit: '700ml' },
+      { id: 'T636800', name: 'T636800 - Matte Black', stock: 0, unit: '700ml' },
+      { id: 'T636700', name: 'T636700 - Light Black', stock: 0, unit: '700ml' },
+      { id: 'T636900', name: 'T636900 - Light Light Black', stock: 0, unit: '700ml' },
+      { id: 'T596C00', name: 'T596C00 - White (350ml)', stock: 0, unit: '350ml' },
+    ],
+    'Maintenance': [
+      { id: 'C13T642000', name: 'C13T642000 - Cleaning Cartridge', stock: 0, unit: '150ml' },
+      { id: 'C12C890191', name: 'C12C890191 - Maintenance Tank', stock: 0, unit: 'unit' },
+    ],
+    'Media - 9900': [
+      { id: 'E-PPO250/44/45', name: 'E-PPO250/44/45 - PearlProof Premium OBA 44"', stock: 0, unit: 'roll' },
+    ],
+    'Media - WT7900': [
+      { id: 'CLEARPROOF', name: 'Epson ClearProof', stock: 0, unit: 'roll' },
+    ]
+  },
+  'Epson 9070': {
+    'Inks': [
+      { id: 'T55J292', name: 'T55J292 - Cyan', stock: 0, unit: '700ml' },
+      { id: 'T55J592', name: 'T55J592 - Light Cyan', stock: 0, unit: '700ml' },
+      { id: 'T55J392', name: 'T55J392 - Vivid Magenta', stock: 0, unit: '700ml' },
+      { id: 'T55J692', name: 'T55J692 - Vivid Light Magenta', stock: 0, unit: '700ml' },
+      { id: 'T55J492', name: 'T55J492 - Yellow', stock: 0, unit: '700ml' },
+      { id: 'T55JB92', name: 'T55JB92 - Green', stock: 0, unit: '700ml' },
+      { id: 'T55JA92', name: 'T55JA92 - Orange', stock: 0, unit: '700ml' },
+      { id: 'T55J192', name: 'T55J192 - Photo Black', stock: 0, unit: '700ml' },
+      { id: 'T55J892', name: 'T55J892 - Matte Black', stock: 0, unit: '700ml' },
+      { id: 'T55J792', name: 'T55J792 - Light Black', stock: 0, unit: '700ml' },
+      { id: 'T55J992', name: 'T55J992 - Light Light Black', stock: 0, unit: '700ml' },
+      { id: 'T55JD92', name: 'T55JD92 - Violet', stock: 0, unit: '700ml' },
+    ],
+    'Media': [
+      { id: 'E-PM120/44/45', name: 'E-PM120/44/45 - Matte Coated 120gsm 44"', stock: 0, unit: 'roll' },
+    ]
+  },
+  'Roland': {
+    'Inks': [
+      { id: 'CT-RXRXG-C', name: 'CT-RXRXG-C - Cyan', stock: 0, unit: '220ml' },
+      { id: 'CT-RXRXG-M', name: 'CT-RXRXG-M - Magenta', stock: 0, unit: '220ml' },
+      { id: 'CT-RXRXG-Y', name: 'CT-RXRXG-Y - Yellow', stock: 0, unit: '220ml' },
+      { id: 'CT-RXRXG-K', name: 'CT-RXRXG-K - Black', stock: 0, unit: '220ml' },
+      { id: 'CT-RXRXG-O', name: 'CT-RXRXG-O - Orange', stock: 0, unit: '220ml' },
+      { id: 'CT-RXRXG-G', name: 'CT-RXRXG-G - Green', stock: 0, unit: '220ml' },
+      { id: 'ESL4-WH', name: 'ESL4-WH - White', stock: 0, unit: '220ml' },
+      { id: 'ESL4-MT', name: 'ESL4-MT - Metallic', stock: 0, unit: '220ml' },
+    ],
+    'Media': [
+      { id: 'E-STF030G/24/30', name: 'E-STF030G/24/30 - Transfer Film 24"', stock: 0, unit: 'roll' },
+    ],
+    'Supplies': [
+      { id: '6701409310', name: '6701409310 - Cleaning Kit (fluid + sticks)', stock: 0, unit: 'kit' },
+      { id: 'ST-037-50', name: 'ST-037-50 - Cleaning Sticks (50pk)', stock: 0, unit: 'pack' },
+    ]
+  },
+  'Materials': {
+    'General': []
+  },
+  'Misc': {
+    'General': []
+  }
+}
+
+// ============================================================================
+// INVENTORY APPLICATION CODE
+// ============================================================================
+
+// State management
+let inventory = JSON.parse(JSON.stringify(INITIAL_INVENTORY))
+let usageHistory = []
+let currentView = 'inventory'
+let statsFilter = 'month'
+let selectedPrinter = 'Epson 9900/WT7900'
+let showAddItemModal = false
+
+/**
+ * Load data from localStorage
+ */
+function loadData() {
+  const savedInventory = storage.get(STORAGE_KEYS.INVENTORY)
+  const savedHistory = storage.get(STORAGE_KEYS.USAGE_HISTORY)
+
+  if (savedInventory) {
+    inventory = savedInventory
+  }
+  if (savedHistory) {
+    usageHistory = savedHistory
+  }
+}
+
+/**
+ * Save data to localStorage
+ */
+function saveData() {
+  storage.set(STORAGE_KEYS.INVENTORY, inventory)
+  storage.set(STORAGE_KEYS.USAGE_HISTORY, usageHistory)
+}
+
+/**
+ * Update stock level for an item
+ */
+function updateStock(printer, category, itemId, change) {
+  const item = inventory[printer][category].find(i => i.id === itemId)
+
+  if (item) {
+    item.stock = Math.max(0, item.stock + change)
+
+    if (change < 0) {
+      usageHistory.push({
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        printer,
+        category,
+        itemId,
+        itemName: item.name,
+        quantity: Math.abs(change),
+        unit: item.unit
+      })
+    }
+
+    saveData()
+    render()
+  }
+}
+
+/**
+ * Get stock level status
+ */
+function getStockLevel(stock) {
+  if (stock === 0) return 'empty'
+  if (stock <= 2) return 'low'
+  return 'good'
+}
+
+/**
+ * Get filtered usage history based on stats filter
+ */
+function getFilteredUsage() {
+  const now = new Date()
+  let startDate
+
+  switch (statsFilter) {
+    case 'week':
+      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+      break
+    case 'month':
+      startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      break
+    case 'year':
+      startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000)
+      break
+    default:
+      return usageHistory
+  }
+
+  return usageHistory.filter(record => new Date(record.timestamp) >= startDate)
+}
+
+/**
+ * Get usage statistics
+ */
+function getUsageStats() {
+  const filtered = getFilteredUsage()
+  const stats = {}
+
+  filtered.forEach(record => {
+    const key = `${record.printer}-${record.itemId}`
+    if (!stats[key]) {
+      stats[key] = {
+        printer: record.printer,
+        itemName: record.itemName,
+        totalUsed: 0,
+        unit: record.unit
+      }
+    }
+    stats[key].totalUsed += record.quantity
+  })
+
+  return Object.values(stats).sort((a, b) => b.totalUsed - a.totalUsed)
+}
+
+/**
+ * Export inventory data to JSON file
+ */
+function exportData() {
+  const exportData = {
+    inventory,
+    usageHistory,
+    exportDate: new Date().toISOString()
+  }
+
+  const dataStr = JSON.stringify(exportData, null, 2)
+  const dataBlob = new Blob([dataStr], { type: 'application/json' })
+  const url = URL.createObjectURL(dataBlob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `inventory-backup-${formatDate()}.json`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+/**
+ * Import inventory data from JSON file
+ */
+function importData() {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = 'application/json'
+  input.onchange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        try {
+          const importedData = JSON.parse(event.target.result)
+
+          if (importedData.inventory && importedData.usageHistory) {
+            inventory = importedData.inventory
+            usageHistory = importedData.usageHistory
+            saveData()
+            render()
+            alert('Data imported successfully!')
+          } else {
+            alert('Invalid backup file format.')
+          }
+        } catch (error) {
+          console.error('Error importing data:', error)
+          alert('Error importing data. Please check the file format.')
+        }
+      }
+      reader.readAsText(file)
+    }
+  }
+  input.click()
+}
+
+/**
+ * Reset all data to initial state
+ */
+function resetData() {
+  if (confirm('Are you sure you want to reset ALL data? This cannot be undone.')) {
+    inventory = JSON.parse(JSON.stringify(INITIAL_INVENTORY))
+    usageHistory = []
+    storage.remove(STORAGE_KEYS.INVENTORY)
+    storage.remove(STORAGE_KEYS.USAGE_HISTORY)
+    render()
+  }
+}
+
+/**
+ * Add a new custom item
+ */
+function addNewItem() {
+  const section = document.getElementById('newItemSection').value
+  const category = document.getElementById('newItemCategory').value
+  const itemId = document.getElementById('newItemId').value.trim()
+  const itemName = document.getElementById('newItemName').value.trim()
+  const itemUnit = document.getElementById('newItemUnit').value.trim()
+  const itemStock = parseInt(document.getElementById('newItemStock').value) || 0
+
+  if (!itemId || !itemName || !itemUnit) {
+    alert('Please fill in all required fields (ID, Name, and Unit)')
+    return
+  }
+
+  for (const [printer, categories] of Object.entries(inventory)) {
+    for (const [cat, items] of Object.entries(categories)) {
+      if (items.find(item => item.id === itemId)) {
+        alert('An item with this ID already exists. Please use a unique ID.')
+        return
+      }
+    }
+  }
+
+  const newItem = {
+    id: itemId,
+    name: itemName,
+    stock: itemStock,
+    unit: itemUnit
+  }
+
+  if (!inventory[section][category]) {
+    inventory[section][category] = []
+  }
+  inventory[section][category].push(newItem)
+
+  saveData()
+  showAddItemModal = false
+  selectedPrinter = section
+  render()
+  alert('Item added successfully!')
+}
+
+/**
+ * Delete an item
+ */
+function deleteItem(section, category, itemId) {
+  if (confirm('Are you sure you want to delete this item? This will also remove all usage history for this item.')) {
+    const categoryItems = inventory[section][category]
+    const itemIndex = categoryItems.findIndex(item => item.id === itemId)
+    if (itemIndex !== -1) {
+      categoryItems.splice(itemIndex, 1)
+    }
+
+    usageHistory = usageHistory.filter(record => record.itemId !== itemId)
+
+    saveData()
+    render()
+  }
+}
+
+/**
+ * Update category options in add item modal
+ */
+function updateCategoryOptions() {
+  const section = document.getElementById('newItemSection').value
+  const categorySelect = document.getElementById('newItemCategory')
+  const categories = Object.keys(inventory[section])
+
+  categorySelect.innerHTML = categories.map(cat =>
+    `<option value="${cat}">${cat}</option>`
+  ).join('')
+}
+
+/**
+ * Render the application
+ */
+function render() {
+  const root = document.getElementById('root')
+
+  let html = `
+    <div>
+      <!-- Header -->
+      <div class="inventory-header">
+        <div class="header-content">
+          <div class="header-title">
+            <div class="header-icon">📦</div>
+            <div>
+              <h1 style="font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--spacing-xs);">
+                Proofing Room Inventory
+              </h1>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted);">
+                Track and manage your stock levels
+              </p>
+            </div>
+          </div>
+          <div class="header-buttons">
+            <a href="../../index.html" class="btn btn-secondary" title="Back to Launcher">
+              ← Launcher
+            </a>
+            <button onclick="window.inventoryApp.setView('inventory')" class="btn-view ${currentView === 'inventory' ? 'active' : ''}">
+              Inventory
+            </button>
+            <button onclick="window.inventoryApp.setView('stats')" class="btn-view ${currentView === 'stats' ? 'active' : ''}">
+              Statistics
+            </button>
+            <button onclick="window.inventoryApp.showAddModal()" class="btn btn-primary" title="Add new item">
+              + Add Item
+            </button>
+            <button onclick="window.inventoryApp.export()" class="btn btn-success" title="Export data to file">
+              ↓ Export
+            </button>
+            <button onclick="window.inventoryApp.import()" class="btn btn-primary" title="Import data from file">
+              ↑ Import
+            </button>
+            <button onclick="window.inventoryApp.reset()" class="btn btn-error" title="Reset all data">
+              🔄
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <main class="inventory-container">
+  `
+
+  if (currentView === 'inventory') {
+    html += renderInventoryView()
+  } else {
+    html += renderStatsView()
+  }
+
+  html += `
+      </main>
+    </div>
+  `
+
+  if (showAddItemModal) {
+    html += renderAddItemModal()
+  }
+
+  root.innerHTML = html
+}
+
+/**
+ * Render inventory view
+ */
+function renderInventoryView() {
+  let html = `
+    <!-- Printer Selector -->
+    <div class="printer-selector flex items-center gap-3">
+      <label>Select Printer:</label>
+      <select onchange="window.inventoryApp.selectPrinter(this.value)" class="form-select">
+        ${Object.keys(inventory).map(printer => `
+          <option value="${printer}" ${selectedPrinter === printer ? 'selected' : ''}>
+            ${printer}
+          </option>
+        `).join('')}
+      </select>
+    </div>
+
+    <!-- Info Banner -->
+    <div class="info-banner">
+      <div class="info-banner-icon">ℹ️</div>
+      <div>
+        <h3 style="font-weight: 600; color: #60a5fa; margin-bottom: var(--spacing-xs);">
+          Moving data between computers?
+        </h3>
+        <p style="font-size: var(--text-sm);">
+          Use the <strong>↓ Export</strong> button to save your inventory data to a file.
+          Then on your other computer, use <strong>↑ Import</strong> to load it back in.
+          Keep the backup file safe!
+        </p>
+      </div>
+    </div>
+
+    <!-- Selected Printer Inventory -->
+    <div class="category-section">
+      <div class="category-header">
+        <h2 class="category-title">${selectedPrinter}</h2>
+      </div>
+  `
+
+  const categories = inventory[selectedPrinter]
+  for (const [category, items] of Object.entries(categories)) {
+    html += `
+      <div class="category-content">
+        <h3 class="category-subtitle">${category}</h3>
+        <div class="items-grid">
+    `
+
+    for (const item of items) {
+      const stockLevel = getStockLevel(item.stock)
+
+      html += `
+        <div class="item-card">
+          <div class="item-header">
+            <div class="item-info">
+              <h4>${item.name}</h4>
+              <p>${item.unit}</p>
+            </div>
+            <span class="stock-badge stock-${stockLevel}">
+              ${item.stock === 0 ? 'Empty' : item.stock <= 2 ? 'Low Stock' : 'In Stock'}
+            </span>
+          </div>
+          <div class="item-controls">
+            <button class="stock-btn stock-btn-minus" onclick="window.inventoryApp.updateStock('${selectedPrinter}', '${category}', '${item.id}', -1)" title="Use 1">
+              −
+            </button>
+            <div class="stock-display">${item.stock}</div>
+            <button class="stock-btn stock-btn-plus" onclick="window.inventoryApp.updateStock('${selectedPrinter}', '${category}', '${item.id}', 1)" title="Add 1">
+              +
+            </button>
+            <button class="btn-delete" onclick="window.inventoryApp.deleteItem('${selectedPrinter}', '${category}', '${item.id}')" title="Delete item">
+              ×
+            </button>
+          </div>
+        </div>
+      `
+    }
+
+    html += `
+        </div>
+      </div>
+    `
+  }
+
+  html += '</div>'
+  return html
+}
+
+/**
+ * Render statistics view
+ */
+function renderStatsView() {
+  const stats = getUsageStats()
+
+  let html = `
+    <div class="stats-container">
+      <div class="stats-filter">
+        <label style="font-weight: 600; margin-right: var(--spacing-md);">Filter by:</label>
+        <select onchange="window.inventoryApp.setStatsFilter(this.value)" class="form-select">
+          <option value="week" ${statsFilter === 'week' ? 'selected' : ''}>Last Week</option>
+          <option value="month" ${statsFilter === 'month' ? 'selected' : ''}>Last Month</option>
+          <option value="year" ${statsFilter === 'year' ? 'selected' : ''}>Last Year</option>
+          <option value="all" ${statsFilter === 'all' ? 'selected' : ''}>All Time</option>
+        </select>
+      </div>
+
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>Printer</th>
+            <th>Item</th>
+            <th>Total Used</th>
+            <th>Unit</th>
+          </tr>
+        </thead>
+        <tbody>
+  `
+
+  if (stats.length === 0) {
+    html += `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-muted);">
+              No usage data for the selected period
+            </td>
+          </tr>
+    `
+  } else {
+    stats.forEach(stat => {
+      html += `
+        <tr>
+          <td>${stat.printer}</td>
+          <td>${stat.itemName}</td>
+          <td style="font-weight: 700; font-family: var(--font-mono);">${stat.totalUsed}</td>
+          <td style="color: var(--color-text-muted);">${stat.unit}</td>
+        </tr>
+      `
+    })
+  }
+
+  html += `
+        </tbody>
+      </table>
+    </div>
+  `
+
+  return html
+}
+
+/**
+ * Render add item modal
+ */
+function renderAddItemModal() {
+  return `
+    <div class="modal-overlay" onclick="if(event.target === this) window.inventoryApp.hideAddModal()">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Add New Item</h3>
+          <button class="modal-close" onclick="window.inventoryApp.hideAddModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <select id="newItemSection" onchange="window.inventoryApp.updateCategories()" class="form-select">
+              <option value="Epson 9900/WT7900">Epson 9900/WT7900</option>
+              <option value="Epson 9070">Epson 9070</option>
+              <option value="Roland">Roland</option>
+              <option value="Materials">Materials</option>
+              <option value="Misc">Misc</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="newItemCategory" class="form-select"></select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Product ID / Code *</label>
+            <input type="text" id="newItemId" placeholder="e.g., T636200 or CUSTOM-001" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Item Name *</label>
+            <input type="text" id="newItemName" placeholder="e.g., Cleaning Solution or Custom Item" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Unit Type *</label>
+            <input type="text" id="newItemUnit" placeholder="e.g., 700ml, roll, unit, box, pack" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Initial Stock (optional)</label>
+            <input type="number" id="newItemStock" value="0" min="0" class="form-input">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button onclick="window.inventoryApp.addItem()" class="btn btn-primary">Add Item</button>
+          <button onclick="window.inventoryApp.hideAddModal()" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * Initialize the app
+ */
+function init() {
+  loadData()
+
+  // Expose API to window for event handlers
+  window.inventoryApp = {
+    updateStock,
+    setView: (view) => {
+      currentView = view
+      render()
+    },
+    selectPrinter: (printer) => {
+      selectedPrinter = printer
+      render()
+    },
+    setStatsFilter: (filter) => {
+      statsFilter = filter
+      render()
+    },
+    showAddModal: () => {
+      showAddItemModal = true
+      render()
+      setTimeout(updateCategoryOptions, 0)
+    },
+    hideAddModal: () => {
+      showAddItemModal = false
+      render()
+    },
+    updateCategories: updateCategoryOptions,
+    addItem: addNewItem,
+    deleteItem,
+    export: exportData,
+    import: importData,
+    reset: resetData
+  }
+
+  render()
+}
+
+// Start the app
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init)
+} else {
+  init()
+}
+    </script>
 </body>
 </html>
