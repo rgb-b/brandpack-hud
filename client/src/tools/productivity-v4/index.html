@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Theme initialization -->
+    <script>
+        (function() {
+            try {
+                const theme = localStorage.getItem('brandpack:theme') || 'default';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'default');
+            }
+        })();
+    </script>
+
+    <title>Productivity Tracker - Brandpack Tools</title>
+    <link rel="stylesheet" href="../../shared/styles/theme.css">
+    <link rel="stylesheet" href="../../shared/styles/base.css">
+    <link rel="stylesheet" href="../../shared/styles/components.css">
+    <link rel="stylesheet" href="./productivity-v4.css">
+</head>
+<body>
+    <div id="app"></div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script type="module" src="./productivity-v4.js"></script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+/**
+ * AppHeader Web Component
+ * Reusable header for all tools with user info and logout
+ */
+
+import { getCurrentUserFromCache, clearCurrentUserCache, isAdmin } from '../utils/auth.js'
+import { users } from '../../api/client.js'
+import { theme } from '../utils/theme.js'
+import commandPalette from './CommandPalette.js'
+import toast from './Toast.js'
+import keyboardService from '../utils/keyboard.js'
+import searchModal from './SearchModal.js'
+import commandRegistry from '../config/commands.js'
+
+export class AppHeader extends HTMLElement {
+  connectedCallback() {
+    const toolName = this.getAttribute('tool-name') || 'Brandpack Tools'
+    const user = getCurrentUserFromCache()
+    const isLauncher = window.location.pathname.includes('/launcher/') || toolName === 'Dashboard'
+    const showBack = !isLauncher
+
+    this.innerHTML = `
+      <header class="app-header">
+        ${showBack ? `
+          <a href="../launcher/index.html" class="header-back">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Back
+          </a>
+        ` : ''}
+        <div class="header-left">
+          <h1 class="text-gradient">Brandpack Tools</h1>
+          <p class="subtitle">${toolName}</p>
+        </div>
+        ${user ? `
+          <div class="header-right">
+            <div class="header-actions">
+              <button class="header-icon-btn" id="headerScreensaverBtn" title="Enable screensaver">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+              </button>
+              <button class="header-icon-btn" id="headerHelpBtn" title="Keyboard shortcuts (?)">?</button>
+            <div class="user-menu">
+              <button class="user-button" id="userMenuToggle">
+                <svg class="user-icon" viewBox="0 0 24 24" width="20" height="20">
+                  <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <span>${user.username}</span>
+                ${isAdmin(user) ? '<span class="admin-badge">Admin</span>' : ''}
+              </button>
+              <div class="user-dropdown" id="userDropdown" style="display: none;">
+                ${isAdmin(user) ? `
+                  <a href="../admin/index.html" class="dropdown-item">
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                      <path fill="currentColor" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                    </svg>
+                    Admin Panel
+                  </a>
+                ` : ''}
+                <a href="../launcher/index.html" class="dropdown-item">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                  </svg>
+                  Dashboard
+                </a>
+                <button class="dropdown-item theme-picker-item" id="themePickerToggle">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                  </svg>
+                  <span>Theme: <span id="currentThemeName">${theme.getDisplayName()}</span></span>
+                  <svg class="chevron" viewBox="0 0 24 24" width="12" height="12">
+                    <path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                  </svg>
+                </button>
+                <div class="theme-submenu" id="themeSubmenu" style="display: none;">
+                  ${this.renderThemeOptions()}
+                </div>
+                <button class="dropdown-item logout-btn" id="logoutBtn">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                  </svg>
+                  Logout
+                </button>
+              </div>
+            </div>
+            </div><!-- end header-actions -->
+          </div>
+        ` : ''}
+      </header>
+    `
+
+    // Add event listeners for user menu
+    if (user) {
+      this.setupUserMenu()
+    }
+
+    // Initialize command palette, keyboard service, and search modal (global singletons)
+    // These components are available on all pages
+    if (!window.__commandPaletteInitialized) {
+      window.__commandPaletteInitialized = true
+
+      // Register global search command
+      commandRegistry.register({
+        id: 'global-search',
+        title: 'Search Everything',
+        category: 'Global',
+        icon: '🔍',
+        hotkey: 'Ctrl Shift F',
+        keywords: ['search', 'find', 'query'],
+        handler: () => searchModal.open(),
+        priority: 95
+      })
+
+      // Command palette, toast, keyboard service, and search modal are already initialized
+      console.log('[CommandPalette] Initialized - Press Ctrl+K to open')
+      console.log('[KeyboardService] Initialized - Press ? to view all shortcuts')
+      console.log('[SearchModal] Initialized - Press Ctrl+Shift+F to search')
+    }
+  }
+
+  renderThemeOptions() {
+    const themes = theme.getAvailable()
+    const isCyberpunk = theme.isCyberpunkTheme()
+    const variant = theme.getCyberpunkVariant()
+
+    // Filter out duplicate Cyberpunk entries - show only one
+    const filteredThemes = themes.filter(t => t.value !== 'cyberpunk-orange')
+
+    let html = filteredThemes.map(t => `
+      <button class="dropdown-item theme-option ${t.active ? 'active' : ''}" data-theme="${t.value}">
+        <span class="theme-indicator"></span>
+        ${t.label}
+      </button>
+    `).join('')
+
+    // Cyberpunk variant toggle (only show if Cyberpunk theme active)
+    if (isCyberpunk) {
+      html += `
+        <div class="cyberpunk-variant-toggle" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+          <button class="dropdown-item variant-toggle-btn" id="cyberpunkVariantToggle">
+            <span class="toggle-icon">⚡</span>
+            <span class="toggle-label">
+              ${variant === 'magenta' ? 'Magenta/Blue' : 'Orange/Teal'}
+            </span>
+          </button>
+        </div>
+      `
+    }
+
+    return html
+  }
+
+  setupUserMenu() {
+    // Screensaver trigger button — only functional on launcher page (has #screensaver element)
+    const screensaverBtn = this.querySelector('#headerScreensaverBtn')
+    if (screensaverBtn) {
+      if (!document.getElementById('screensaver')) {
+        screensaverBtn.style.display = 'none'  // Hide on non-launcher pages
+      } else {
+        screensaverBtn.addEventListener('click', () => {
+          window.dispatchEvent(new CustomEvent('screensaver:trigger'))
+        })
+      }
+    }
+
+    // Help / keyboard shortcuts button
+    const helpBtn = this.querySelector('#headerHelpBtn')
+    if (helpBtn) {
+      helpBtn.addEventListener('click', () => {
+        keyboardService.showHints()
+      })
+    }
+
+    const toggleBtn = this.querySelector('#userMenuToggle')
+    const dropdown = this.querySelector('#userDropdown')
+    const logoutBtn = this.querySelector('#logoutBtn')
+    const themePickerToggle = this.querySelector('#themePickerToggle')
+    const themeSubmenu = this.querySelector('#themeSubmenu')
+
+    if (toggleBtn && dropdown) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none'
+        // Close theme submenu when dropdown opens
+        if (dropdown.style.display === 'block') {
+          themeSubmenu.style.display = 'none'
+          themePickerToggle.classList.remove('open')
+        }
+      })
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', () => {
+        dropdown.style.display = 'none'
+        themeSubmenu.style.display = 'none'
+        themePickerToggle.classList.remove('open')
+      })
+
+      dropdown.addEventListener('click', (e) => {
+        e.stopPropagation()
+      })
+    }
+
+    // Theme picker submenu toggle
+    if (themePickerToggle && themeSubmenu) {
+      themePickerToggle.addEventListener('click', (e) => {
+        e.stopPropagation()
+        const isOpen = themeSubmenu.style.display === 'block'
+        themeSubmenu.style.display = isOpen ? 'none' : 'block'
+        themePickerToggle.classList.toggle('open', !isOpen)
+      })
+    }
+
+    // Attach all theme-related listeners
+    this.attachThemeOptionListeners()
+
+    // Listen for theme changes from other tabs
+    window.addEventListener('themechange', () => {
+      const themeNameSpan = this.querySelector('#currentThemeName')
+      if (themeNameSpan) {
+        themeNameSpan.textContent = theme.getDisplayName()
+      }
+      // Update active indicators
+      themeOptions.forEach(option => {
+        const isActive = option.dataset.theme === theme.get()
+        option.classList.toggle('active', isActive)
+      })
+    })
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          await users.logout()
+          clearCurrentUserCache()
+          window.location.href = '../login/index.html'
+        } catch (error) {
+          console.error('Logout failed:', error)
+          // Force logout on client side even if server request fails
+          clearCurrentUserCache()
+          window.location.href = '../login/index.html'
+        }
+      })
+    }
+  }
+
+  attachThemeOptionListeners() {
+    const dropdown = this.querySelector('#userDropdown')
+    const themeSubmenu = this.querySelector('#themeSubmenu')
+    const themePickerToggle = this.querySelector('#themePickerToggle')
+
+    // Theme option click listeners
+    const themeOptions = this.querySelectorAll('.theme-option')
+    themeOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation()
+        const themeName = option.dataset.theme
+        if (themeName) {
+          theme.set(themeName)
+          // Update active indicator
+          themeOptions.forEach(opt => opt.classList.remove('active'))
+          option.classList.add('active')
+          // Update theme name in picker label
+          const themeNameSpan = this.querySelector('#currentThemeName')
+          if (themeNameSpan) {
+            themeNameSpan.textContent = theme.getDisplayName()
+          }
+          // Re-render theme options to show/hide variant toggle
+          const themeSubmenuContent = this.querySelector('#themeSubmenu')
+          if (themeSubmenuContent) {
+            themeSubmenuContent.innerHTML = this.renderThemeOptions()
+            this.attachThemeOptionListeners() // Re-attach listeners after re-render
+          }
+          // Close menus
+          if (dropdown) dropdown.style.display = 'none'
+          if (themeSubmenu) themeSubmenu.style.display = 'none'
+          if (themePickerToggle) themePickerToggle.classList.remove('open')
+        }
+      })
+    })
+
+    // Cyberpunk variant toggle listener
+    const variantToggle = this.querySelector('#cyberpunkVariantToggle')
+    if (variantToggle) {
+      variantToggle.addEventListener('click', (e) => {
+        e.stopPropagation()
+        theme.toggleCyberpunkVariant()
+        // Update toggle label
+        const variant = theme.getCyberpunkVariant()
+        const toggleLabel = this.querySelector('.toggle-label')
+        if (toggleLabel) {
+          toggleLabel.textContent = variant === 'magenta' ? 'Magenta/Blue' : 'Orange/Teal'
+        }
+        // Update theme name in header
+        const themeNameSpan = this.querySelector('#currentThemeName')
+        if (themeNameSpan) {
+          themeNameSpan.textContent = theme.getDisplayName()
+        }
+      })
+    }
+  }
+}
+
+customElements.define('app-header', AppHeader)

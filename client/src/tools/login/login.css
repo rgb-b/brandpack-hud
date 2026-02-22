@@ -1,0 +1,329 @@
+/**
+ * Login page styles
+ * PIN pad, login form, and authentication UI
+ */
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--spacing-lg);
+  background: var(--gradient-bg);
+}
+
+.login-container {
+  width: 100%;
+  max-width: 450px;
+}
+
+.login-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Header */
+.login-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.login-logo {
+  margin-bottom: var(--spacing-lg);
+}
+
+.logo-icon {
+  font-size: 4rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.login-title {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  font-family: var(--font-display);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--spacing-xs);
+}
+
+.login-subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+}
+
+/* Form */
+.login-form {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* PIN Display */
+.pin-display {
+  background: var(--color-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition-base);
+}
+
+.pin-display:focus-within,
+.pin-display:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 108, 53, 0.3);
+}
+
+.pin-dots {
+  font-size: var(--text-2xl);
+  font-family: var(--font-mono);
+  color: var(--color-text-primary);
+  letter-spacing: 0.5rem;
+  user-select: none;
+}
+
+.pin-dots:empty::before {
+  content: 'Enter PIN';
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  font-family: var(--font-sans);
+  letter-spacing: normal;
+}
+
+/* PIN Pad */
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
+  margin: var(--spacing-lg) 0;
+}
+
+.pin-button {
+  background: var(--color-bg-card);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  padding: var(--spacing-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  user-select: none;
+}
+
+.pin-button:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.pin-button:active {
+  transform: translateY(0);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.pin-button-clear,
+.pin-button-backspace {
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pin-button-backspace span {
+  font-size: var(--text-2xl);
+}
+
+/* Error Message */
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  font-size: var(--text-sm);
+}
+
+.error-message.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-8px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(8px);
+  }
+}
+
+/* Submit Button */
+.login-submit {
+  width: 100%;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.login-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Footer */
+.login-footer {
+  text-align: center;
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.login-footer-text {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-card {
+    padding: var(--spacing-lg);
+  }
+
+  .login-title {
+    font-size: var(--text-2xl);
+  }
+
+  .logo-icon {
+    font-size: 3rem;
+  }
+
+  .pin-button {
+    padding: var(--spacing-md);
+    font-size: var(--text-lg);
+  }
+
+  .pin-pad {
+    gap: var(--spacing-xs);
+  }
+}
+
+/* Focus styles for accessibility */
+.pin-button:focus-visible,
+.form-input:focus-visible,
+.login-submit:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Setup Card Styles */
+.setup-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.setup-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.setup-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.setup-title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  font-family: var(--font-display);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--spacing-xs);
+}
+
+.setup-subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--text-base);
+}
+
+.setup-form {
+  margin-bottom: var(--spacing-lg);
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  padding: var(--spacing-sm) 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.checkbox-container span {
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  user-select: none;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Responsive adjustments for setup */
+@media (max-width: 480px) {
+  .setup-card {
+    padding: var(--spacing-lg);
+  }
+
+  .setup-title {
+    font-size: var(--text-xl);
+  }
+
+  .setup-icon {
+    font-size: 2.5rem;
+  }
+}

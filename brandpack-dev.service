@@ -1,0 +1,19 @@
+[Unit]
+Description=Brandpack Tools Development Server (Backend + Frontend)
+After=network.target
+
+[Service]
+Type=simple
+User=el
+WorkingDirectory=/home/el/Documents/El-Projects/brandpack-tools
+Environment="PATH=/home/el/.nvm/versions/node/v24.12.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+EnvironmentFile=/home/el/Documents/El-Projects/brandpack-tools/server/.env
+ExecStart=/home/el/.nvm/versions/node/v24.12.0/bin/npm run dev
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=brandpack-dev
+
+[Install]
+WantedBy=multi-user.target

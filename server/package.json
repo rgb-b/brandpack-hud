@@ -1,0 +1,43 @@
+{
+  "name": "brandpack-tools-server",
+  "version": "3.0.0",
+  "description": "Backend server for Brandpack Tools with SQLite database",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "migrate": "node src/config/database.js --migrate",
+    "migrate:ids": "node scripts/run-id-migration.js",
+    "update:barcodes": "node scripts/update-barcodes.js",
+    "import:pantone": "node scripts/import-pantone-spreadsheet.js",
+    "backup": "node scripts/backup-database.js",
+    "restore": "node scripts/restore-database.js"
+  },
+  "keywords": [
+    "brandpack",
+    "tools",
+    "inventory",
+    "maintenance",
+    "productivity"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-sqlite3": "^0.9.16",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.2.1",
+    "express-session": "^1.18.2",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "node-fetch": "^3.3.2",
+    "sqlite3": "^5.1.7",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

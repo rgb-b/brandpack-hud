@@ -1,26 +1,29 @@
 {
   "name": "brandpack-tools",
-  "version": "2.0.0",
-  "description": "Brandpack Tools - Proofing Room Management Suite",
+  "version": "3.0.0",
+  "description": "Brandpack Tools - Proofing Room Management Suite (Web Server Version)",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "node scripts/build-all.js",
-    "preview": "vite preview",
-    "package": "node scripts/package.js"
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev:bg": "sudo systemctl start brandpack-dev && journalctl -u brandpack-dev -f",
+    "dev:stop": "sudo systemctl stop brandpack-dev",
+    "start": "cd server && npm start",
+    "build": "cd client && npm run build",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "migrate": "cd server && npm run migrate"
   },
   "keywords": [
     "brandpack",
     "proofing",
     "tools",
-    "pantone",
-    "inventory"
+    "inventory",
+    "maintenance"
   ],
   "author": "Brandpack Australasia",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
-    "vite": "^7.3.1",
-    "vite-plugin-singlefile": "^2.3.0",
-    "xlsx": "^0.18.5"
+    "concurrently": "^8.2.2"
   }
 }

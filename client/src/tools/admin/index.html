@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Theme initialization - MUST run before CSS loads -->
+    <script>
+        (function() {
+            try {
+                const theme = localStorage.getItem('brandpack:theme') || 'default';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                // localStorage unavailable, use default
+                document.documentElement.setAttribute('data-theme', 'default');
+            }
+        })();
+    </script>
+
+    <title>Admin Panel - Brandpack Tools</title>
+    <link rel="stylesheet" href="../../shared/styles/theme.css">
+    <link rel="stylesheet" href="../../shared/styles/base.css">
+    <link rel="stylesheet" href="../../shared/styles/components.css">
+    <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+    <app-header tool-name="Admin Panel"></app-header>
+
+    <div class="admin-container">
+
+        <!-- Admin Panel Content -->
+        <div class="admin-content">
+            <!-- User Management Section -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2 class="section-title">User Management</h2>
+                    <button class="btn btn-primary" id="createUserBtn">
+                        <svg viewBox="0 0 24 24" width="16" height="16" style="fill: white;">
+                            <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        Create User
+                    </button>
+                </div>
+
+                <!-- Users Table -->
+                <div class="users-table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="4" class="loading-cell">Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- System Information Section -->
+            <div class="admin-section">
+                <h2 class="section-title">System Information</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">👥</div>
+                        <div class="info-content">
+                            <div class="info-label">Total Users</div>
+                            <div class="info-value" id="totalUsers">0</div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">👤</div>
+                        <div class="info-content">
+                            <div class="info-label">Regular Users</div>
+                            <div class="info-value" id="regularUsers">0</div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">🛡️</div>
+                        <div class="info-content">
+                            <div class="info-label">Administrators</div>
+                            <div class="info-value" id="adminUsers">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create User Modal -->
+        <div id="createUserModal" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Create New User</h3>
+                    <button class="modal-close" id="closeModalBtn">&times;</button>
+                </div>
+                <form id="createUserForm">
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username</label>
+                        <input type="text" id="username" name="username" class="form-input" required autocomplete="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="pin">PIN (4 digits)</label>
+                        <input type="password" id="pin" name="pin" class="form-input" required autocomplete="new-password" placeholder="Enter 4 digit PIN" pattern="[0-9]{4}" maxlength="4">
+                        <small class="form-hint">PIN must be exactly 4 digits. Cannot be all same (1111) or sequential (1234)</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPin">Confirm PIN</label>
+                        <input type="password" id="confirmPin" name="confirmPin" class="form-input" required autocomplete="new-password" placeholder="Re-enter PIN" pattern="[0-9]{4}" maxlength="4">
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="isAdmin" name="isAdmin">
+                            <span>Grant administrator privileges</span>
+                        </label>
+                    </div>
+                    <div class="error-message" id="formError" style="display: none;"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module" src="./admin.js"></script>
+</body>
+</html>
