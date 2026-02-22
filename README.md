@@ -115,7 +115,6 @@ Works in all modern browsers:
 
 ## Documentation
 
-- `CLAUDE.md` - Development guide
 - `server/README.md` - API documentation
 - `legacy/` - Previous version reference
 

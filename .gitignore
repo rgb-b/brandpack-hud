@@ -27,10 +27,6 @@ server/.env
 # IDE
 .vscode/
 .idea/
-.claude/
-
-# Claude Code
-.claude/
 
 # OS
 .DS_Store
