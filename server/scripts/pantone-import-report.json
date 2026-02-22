@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-02-06T00:15:47.249Z",
+  "spreadsheet": "/home/el/Documents/brandpack-tools/Roland VS300 Pantone COATED Library.xlsx",
+  "sheets": [
+    "Pantone Coated",
+    "Color Bridge",
+    "+2000 Coated",
+    "+3500 Coated",
+    "+4000 Coated",
+    "+6000 Coated",
+    "Pastel Coated",
+    "Metallic",
+    "Premium Metallic"
+  ],
+  "total_colors": 4225,
+  "matched": 2237,
+  "not_matched": 1988,
+  "suspicious_dates_found": 2,
+  "result": {
+    "count": 4225,
+    "firstId": 1,
+    "lastId": 4225
+  }
+}

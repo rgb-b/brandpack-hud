@@ -1,0 +1,902 @@
+/* Import Cyberpunk Fonts - Must be at top of file */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
+
+/**
+ * Design tokens and theme variables
+ * Brandpack Tools color scheme and spacing
+ */
+
+/* ============================================================================
+   GLOBAL CONTRAST FIXES
+   Ensure dropdown menus and interactive elements have good contrast
+   ============================================================================ */
+
+:root {
+  /* Brand Colors */
+  --color-primary: #ff6b35;
+  --color-primary-light: #ff8c42;
+  --color-primary-bright: #ffa600;
+
+  /* Background Colors */
+  --color-bg-dark: #0a0e1a;
+  --color-bg-darker: #0f1419;
+  --color-bg-card: #1a1f2e;
+  --color-bg-hover: #242938;
+
+  /* Text Colors */
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Productivity Status Colors */
+  --color-available: #10b981;
+  --color-working: #f59e0b;
+  --color-unavailable: #ef4444;
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(135deg, #0a0e1a 0%, #0f1419 100%);
+  --gradient-primary: linear-gradient(135deg, #ff6b35, #ff8c42, #ffa600);
+  --gradient-card: linear-gradient(135deg, #1a1f2e, #242938);
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* Font Families */
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+}
+
+/* ============================================================================
+   THEME OVERRIDES
+   ============================================================================ */
+
+/**
+ * Windows 95 Theme
+ * Authentic recreation based on Windows 95/98 system colors
+ * Uses layered inset box-shadows for 3D bevel effects
+ */
+[data-theme="win95"] {
+  /* Core UI Colors (from Windows 95 system palette) */
+  --color-bg-dark: #c0c0c0;           /* Silver gray - window background */
+  --color-bg-darker: #808080;         /* Dark gray - inactive elements */
+  --color-bg-card: #dfdfdf;           /* Light gray - button face */
+  --color-bg-hover: #d4d0c8;          /* Slightly darker - hover state */
+
+  /* Text Colors */
+  --color-text-primary: #222222;      /* Near black - primary text */
+  --color-text-secondary: #404040;    /* Dark gray - secondary text */
+  --color-text-muted: #808080;        /* Medium gray - muted text */
+
+  /* Accent Colors */
+  --color-primary: #000080;           /* Navy blue - title bars, active */
+  --color-primary-light: #1084d0;     /* Bright blue - highlights */
+  --color-primary-bright: #0000ff;    /* Pure blue - links */
+
+  /* Status Colors (adjusted for Win95 palette) */
+  --color-success: #008000;           /* Green */
+  --color-warning: #ff8c00;           /* Orange */
+  --color-error: #c00000;             /* Red */
+  --color-info: #008080;              /* Teal - iconic desktop color */
+
+  /* Productivity Status Colors */
+  --color-available: #008000;
+  --color-working: #ff8c00;
+  --color-unavailable: #c00000;
+
+  /* Gradients - Flat for Win95 aesthetic */
+  --gradient-bg: #c0c0c0;
+  --gradient-card: #dfdfdf;
+  --gradient-primary: linear-gradient(to bottom, #1084d0 0%, #000080 100%);
+
+  /* Border Radius - Sharp corners only */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+
+  /* 3D Bevel Shadows - Authentic Windows 95 style */
+  --shadow-sm: none;  /* No drop shadows in Win95 */
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+
+  /* Raised Effect (buttons, panels) */
+  --shadow-raised-outer: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff;
+  --shadow-raised-inner: inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+  --shadow-raised: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+
+  /* Sunken Effect (pressed buttons, input fields) */
+  --shadow-sunken-outer: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a;
+  --shadow-sunken-inner: inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+  --shadow-sunken: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080;
+
+  /* Typography - Windows 95 system fonts */
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-display: Arial, Helvetica, sans-serif;
+  --font-mono: 'Courier New', Courier, monospace;
+}
+
+/* Win95 Dropdown - Proper contrast without breaking interactions */
+[data-theme="win95"] .user-dropdown {
+  background: #dfdfdf;
+  border: 2px outset #dfdfdf;
+}
+
+[data-theme="win95"] .user-button {
+  background: #dfdfdf;
+  border: 2px outset #dfdfdf;
+}
+
+
+/**
+ * Mac Aqua Theme
+ * Authentic Mac OS X Aqua aesthetic (1999-2007)
+ * Glossy gel buttons, translucent windows, iconic iMac era design
+ */
+[data-theme="aqua"] {
+  /* Primary Aqua Blue Colors */
+  --color-primary: #4A90E2;           /* Classic Aqua blue */
+  --color-primary-light: #5AC8FA;     /* Light blue - brighter for better visibility */
+  --color-primary-bright: #1C5B9B;    /* Dark blue - solid for consistency */
+
+  /* Background Colors - Translucent whites and grays */
+  --color-bg-dark: rgba(255, 255, 255, 0.75);       /* Main background with transparency */
+  --color-bg-darker: rgba(232, 232, 232, 0.8);      /* Toolbar gray */
+  --color-bg-card: rgba(255, 255, 255, 0.85);       /* Card backgrounds */
+  --color-bg-hover: rgba(240, 240, 245, 0.9);       /* Hover state */
+
+  /* Text Colors */
+  --color-text-primary: #222222;      /* Dark text on light backgrounds */
+  --color-text-secondary: #666666;    /* Secondary gray text */
+  --color-text-muted: #666666;        /* Muted gray - darker for better contrast */
+
+  /* Status Colors - Traffic light inspired */
+  --color-success: #28c941;           /* Green traffic light */
+  --color-warning: #ffbd2e;           /* Yellow traffic light */
+  --color-error: #ff6159;             /* Red traffic light */
+  --color-info: #4A90E2;              /* Aqua blue */
+
+  /* Productivity Status Colors */
+  --color-available: #28c941;
+  --color-working: #ffbd2e;
+  --color-unavailable: #ff6159;
+
+  /* Gradients - Glossy gel effects */
+  --gradient-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.75) 0%, rgba(245, 245, 247, 0.8) 100%);
+  --gradient-primary: linear-gradient(to bottom, rgba(28, 91, 155, 0.8) 0%, rgba(60, 132, 198, 0.85) 50%, rgba(108, 191, 255, 0.9) 100%);
+  --gradient-card: linear-gradient(to bottom, rgba(255, 255, 255, 0.85) 0%, rgba(250, 250, 252, 0.85) 100%);
+
+  /* Border Radius - Iconic rounded Aqua look */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Shadows - Layered glossy gel effects */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-md: inset 0 8px 15px rgba(255, 255, 255, 0.5), 0 3px 5px rgba(0, 0, 0, 0.2), 0 10px 13px rgba(0, 0, 0, 0.1);
+  --shadow-lg: inset 0 13px 25px rgba(255, 255, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.15), 0 12px 20px rgba(0, 0, 0, 0.12);
+  --shadow-xl: inset 0 13px 25px rgba(255, 255, 255, 0.5), 0 8px 16px rgba(0, 0, 0, 0.15), 0 16px 32px rgba(0, 0, 0, 0.1);
+
+  /* Aqua Button Glossy Effect - Inner highlight for gel appearance */
+  --shadow-aqua-button: inset 0 13px 25px rgba(255, 255, 255, 0.5), 0 3px 5px rgba(0, 0, 0, 0.2), 0 10px 13px rgba(0, 0, 0, 0.1);
+  --shadow-aqua-button-hover: inset 0 13px 25px rgba(255, 255, 255, 0.8), 0 3px 5px rgba(0, 0, 0, 0.2), 0 10px 13px rgba(0, 0, 0, 0.2);
+
+  /* Input Fields - Subtle inset */
+  --shadow-input: inset 0 1px 3px rgba(0, 0, 0, 0.15), 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  /* Typography - Classic Mac fonts */
+  --font-sans: 'Lucida Grande', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-display: 'Lucida Grande', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, sans-serif;
+  --font-mono: 'Monaco', 'Courier New', Courier, monospace;
+}
+
+/* Aqua Dropdown - Proper contrast without breaking interactions */
+[data-theme="aqua"] .user-dropdown {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="aqua"] .user-button {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+/**
+ * Neon Dusk Theme
+ * Soft cyberpunk + retro-futurism aesthetic
+ * Blue/orange color scheme with smooth gradients and gentle glows
+ */
+[data-theme="neon-dusk"] {
+  /* Background Colors - Soft dark blues */
+  --color-bg-dark: #0a0f1a;           /* Deep space blue */
+  --color-bg-darker: #060a12;         /* Darker variant */
+  --color-bg-card: #0f1623;           /* Card backgrounds */
+  --color-bg-hover: #1a2332;          /* Hover states */
+
+  /* Primary Blue Tones */
+  --color-primary: #4a9eff;           /* Soft electric blue */
+  --color-primary-light: #6eb5ff;     /* Lighter blue */
+  --color-primary-bright: #8fc9ff;    /* Brightest blue */
+
+  /* Orange Accents */
+  --color-accent-orange: #ff8a4c;     /* Soft coral orange */
+  --color-accent-orange-light: #ffaa70;
+  --color-accent-orange-bright: #ffc794;
+
+  /* Text Colors - Blue-tinted for cohesion */
+  --color-text-primary: #e8f0ff;      /* Soft white with blue tint */
+  --color-text-secondary: #a8c5e8;    /* Medium blue-gray */
+  --color-text-muted: #6b8199;        /* Muted blue-gray */
+
+  /* Status Colors */
+  --color-success: #4ade80;           /* Soft green */
+  --color-warning: #ff8a4c;           /* Use orange accent */
+  --color-error: #f87171;             /* Soft red */
+  --color-info: #6eb5ff;              /* Use primary blue */
+
+  /* Productivity Status Colors */
+  --color-available: #4ade80;
+  --color-working: #ff8a4c;
+  --color-unavailable: #f87171;
+
+  /* Gradients - Smooth blue to orange transitions */
+  --gradient-bg: linear-gradient(135deg, #0a0f1a 0%, #060a12 100%);
+  --gradient-primary: linear-gradient(135deg, #4a9eff 0%, #5fa8ff 50%, #6eb5ff 100%);
+  --gradient-accent: linear-gradient(135deg, #ff8a4c 0%, #ff9d6e 50%, #ffb090 100%);
+  --gradient-hero: linear-gradient(135deg, #4a9eff 0%, #6eb5ff 30%, #ff8a4c 70%, #ffaa70 100%);
+  --gradient-card: linear-gradient(135deg, #0f1623 0%, #141d2e 100%);
+
+  /* Border Radius - Rounded, soft feel */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Glow Effects - Soft, multi-layer */
+  --glow-primary: 0 0 20px rgba(74, 158, 255, 0.15),
+                  0 0 40px rgba(74, 158, 255, 0.08),
+                  0 0 60px rgba(74, 158, 255, 0.04);
+
+  --glow-accent: 0 0 20px rgba(255, 138, 76, 0.15),
+                 0 0 40px rgba(255, 138, 76, 0.08);
+
+  /* Shadow System - Depth + glow */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3),
+               0 0 10px rgba(74, 158, 255, 0.03);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4),
+               0 0 20px rgba(74, 158, 255, 0.05);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5),
+               0 0 40px rgba(74, 158, 255, 0.08);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.6),
+               0 0 60px rgba(74, 158, 255, 0.1);
+
+  /* Typography - Smart font mixing */
+  --font-sans: 'DM Sans', -apple-system, sans-serif;
+  --font-display: 'Outfit', 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ============================================================================
+   CYBERPUNK 2077 THEME
+   ============================================================================ */
+
+/**
+ * Cyberpunk Magenta Variant
+ * Hot Pink Magenta + Electric Blue color scheme
+ */
+[data-theme="cyberpunk-magenta"] {
+  /* Primary: Hot Pink Magenta */
+  --color-primary: #FF2A6D;
+  --color-primary-light: #FF5A8D;
+  --color-primary-bright: #FF8AB5;
+
+  /* Secondary: Electric Blue */
+  --color-secondary: #05D9E8;
+  --color-secondary-light: #3BE5F0;
+  --color-secondary-bright: #70EFF8;
+
+  /* Background */
+  --color-bg-dark: #000000;
+  --color-bg-darker: #000000;
+  --color-bg-card: #0a0a12;      /* Blue-tinted black */
+  --color-bg-hover: #12121a;
+
+  /* Text */
+  --color-text-primary: #F0F0FF;  /* Slightly blue-tinted white */
+  --color-text-secondary: #A0A0C0;
+  --color-text-muted: #606080;
+
+  /* Status Colors (Cyberpunk palette) */
+  --color-success: #05D9E8;       /* Cyan */
+  --color-warning: #FFD700;       /* Yellow/Gold */
+  --color-error: #FF2A6D;         /* Magenta */
+  --color-info: #8A2BE2;          /* Purple */
+
+  /* Productivity status */
+  --color-available: #05D9E8;     /* Cyan */
+  --color-working: #FFD700;       /* Yellow */
+  --color-unavailable: #FF2A6D;   /* Magenta */
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FF2A6D 0%, #FF5A8D 100%);
+  --gradient-secondary: linear-gradient(135deg, #05D9E8 0%, #3BE5F0 100%);
+  --gradient-bg: radial-gradient(ellipse at top, #0a0a12 0%, #000000 100%);
+
+  /* Glows */
+  --glow-primary: 0 0 20px rgba(255, 42, 109, 0.6);
+  --glow-secondary: 0 0 20px rgba(5, 217, 232, 0.6);
+  --glow-text: 0 0 10px rgba(255, 42, 109, 0.3);
+}
+
+/**
+ * Cyberpunk Orange Variant
+ * Warm Orange + Cool Teal color scheme
+ */
+[data-theme="cyberpunk-orange"] {
+  /* Primary: Warm Orange */
+  --color-primary: #FF6600;
+  --color-primary-light: #FF8533;
+  --color-primary-bright: #FFA366;
+
+  /* Secondary: Cool Teal */
+  --color-secondary: #00CED1;
+  --color-secondary-light: #33D8DB;
+  --color-secondary-bright: #66E3E5;
+
+  /* Background */
+  --color-bg-dark: #000000;
+  --color-bg-darker: #000000;
+  --color-bg-card: #0a0a12;
+  --color-bg-hover: #12121a;
+
+  /* Text */
+  --color-text-primary: #F0F0FF;
+  --color-text-secondary: #A0A0C0;
+  --color-text-muted: #606080;
+
+  /* Status Colors */
+  --color-success: #00CED1;       /* Teal */
+  --color-warning: #FFD700;       /* Yellow */
+  --color-error: #FF6600;         /* Orange */
+  --color-info: #8A2BE2;          /* Purple */
+
+  /* Productivity status */
+  --color-available: #00CED1;
+  --color-working: #FFD700;
+  --color-unavailable: #FF6600;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FF6600 0%, #FF8533 100%);
+  --gradient-secondary: linear-gradient(135deg, #00CED1 0%, #33D8DB 100%);
+  --gradient-bg: radial-gradient(ellipse at top, #0a0a12 0%, #000000 100%);
+
+  /* Glows */
+  --glow-primary: 0 0 20px rgba(255, 102, 0, 0.6);
+  --glow-secondary: 0 0 20px rgba(0, 206, 209, 0.6);
+  --glow-text: 0 0 10px rgba(255, 102, 0, 0.3);
+}
+
+/**
+ * Shared Cyberpunk Styles (both variants)
+ */
+[data-theme^="cyberpunk"] {
+  /* Typography */
+  --font-display: 'Rajdhani', 'Orbitron', sans-serif;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'Fira Code', 'JetBrains Mono', monospace;
+
+  /* Border Radius - Sleek rounded (Kiroshi style) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Shadows - Medium glow */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4), var(--glow-primary);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5), var(--glow-primary);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6), var(--glow-primary);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.7), var(--glow-primary);
+
+  /* Corner bracket size */
+  --bracket-size: 12px;
+  --bracket-thickness: 2px;
+
+  /* Grid overlay */
+  --grid-color: rgba(5, 217, 232, 0.05);
+  --grid-size: 40px;
+}
+
+/* Background Grid Pattern */
+[data-theme^="cyberpunk"] body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1;
+}
+
+/* Scanning Lines Animation */
+[data-theme^="cyberpunk"] body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.01) 0px,
+    rgba(255, 255, 255, 0.01) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 9999;
+  animation: scan-lines 10s linear infinite;
+}
+
+@keyframes scan-lines {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+/* Typography - Display headers, Mono data */
+[data-theme^="cyberpunk"] h1,
+[data-theme^="cyberpunk"] h2,
+[data-theme^="cyberpunk"] h3,
+[data-theme^="cyberpunk"] .widget-title,
+[data-theme^="cyberpunk"] .tool-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-primary);
+  text-shadow: var(--glow-text);
+}
+
+/* Numbers - Monospace with color coding */
+[data-theme^="cyberpunk"] .stat-value,
+[data-theme^="cyberpunk"] .metric-value,
+[data-theme^="cyberpunk"] .countdown-time,
+[data-theme^="cyberpunk"] .resource-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-shadow: 0 0 8px currentColor;
+}
+
+/* Number brackets - Tech decorators */
+[data-theme^="cyberpunk"] .stat-value::before,
+[data-theme^="cyberpunk"] .metric-value::before {
+  content: '[';
+  opacity: 0.5;
+  margin-right: 0.25em;
+}
+
+[data-theme^="cyberpunk"] .stat-value::after,
+[data-theme^="cyberpunk"] .metric-value::after {
+  content: ']';
+  opacity: 0.5;
+  margin-left: 0.25em;
+}
+
+/* Color-coded data types */
+[data-theme^="cyberpunk"] .count,
+[data-theme^="cyberpunk"] [data-type="count"] {
+  color: var(--color-secondary);  /* Cyan/Teal for counts */
+}
+
+[data-theme^="cyberpunk"] .time,
+[data-theme^="cyberpunk"] [data-type="time"],
+[data-theme^="cyberpunk"] .countdown-time {
+  color: var(--color-warning);     /* Yellow for time */
+}
+
+[data-theme^="cyberpunk"] .percentage,
+[data-theme^="cyberpunk"] [data-type="percentage"] {
+  color: var(--color-primary);     /* Magenta/Orange for percentages */
+}
+
+/* Clock - Pulsing glow */
+[data-theme^="cyberpunk"] #currentTime {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-warning);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    text-shadow: 0 0 10px var(--color-warning),
+                 0 0 20px var(--color-warning);
+  }
+  50% {
+    text-shadow: 0 0 20px var(--color-warning),
+                 0 0 30px var(--color-warning),
+                 0 0 40px var(--color-warning);
+  }
+}
+
+/* Corner Brackets on Widgets */
+[data-theme^="cyberpunk"] .widget::before,
+[data-theme^="cyberpunk"] .widget::after,
+[data-theme^="cyberpunk"] .tool-card::before,
+[data-theme^="cyberpunk"] .tool-card::after {
+  content: '';
+  position: absolute;
+  width: var(--bracket-size);
+  height: var(--bracket-size);
+  border-color: var(--color-primary);
+  border-style: solid;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Top-left bracket */
+[data-theme^="cyberpunk"] .widget::before,
+[data-theme^="cyberpunk"] .tool-card::before {
+  top: -1px;
+  left: -1px;
+  border-width: var(--bracket-thickness) 0 0 var(--bracket-thickness);
+}
+
+/* Top-right bracket */
+[data-theme^="cyberpunk"] .widget::after,
+[data-theme^="cyberpunk"] .tool-card::after {
+  top: -1px;
+  right: -1px;
+  border-width: var(--bracket-thickness) var(--bracket-thickness) 0 0;
+}
+
+/* Animated bracket extension on hover */
+[data-theme^="cyberpunk"] .widget:hover::before,
+[data-theme^="cyberpunk"] .widget:hover::after,
+[data-theme^="cyberpunk"] .tool-card:hover::before,
+[data-theme^="cyberpunk"] .tool-card:hover::after {
+  width: calc(var(--bracket-size) * 1.5);
+  height: calc(var(--bracket-size) * 1.5);
+  filter: drop-shadow(var(--glow-primary));
+}
+
+/* Borders - Thin tech lines */
+[data-theme^="cyberpunk"] .widget,
+[data-theme^="cyberpunk"] .tool-card {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5),
+              0 0 15px var(--color-primary-light);
+}
+
+/* Buttons - Solid with scan effect */
+[data-theme^="cyberpunk"] button,
+[data-theme^="cyberpunk"] .btn {
+  position: relative;
+  overflow: hidden;
+  background: var(--gradient-primary);
+  border: 1px solid var(--color-primary-bright);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+/* Override aggressive button styling for dropdown items */
+[data-theme^="cyberpunk"] .user-dropdown button {
+  background: none;
+  border: none;
+  color: inherit;  /* Inherit from .user-dropdown parent */
+  font-family: var(--font-sans);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  box-shadow: none;
+  overflow: visible;
+  transform: none;
+}
+
+/* Header icon buttons - override aggressive cyberpunk button style */
+[data-theme^="cyberpunk"] .header-icon-btn {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary-light);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: normal;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6), inset 0 0 8px rgba(0, 0, 0, 0.3);
+  overflow: visible;
+}
+
+[data-theme^="cyberpunk"] .header-icon-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary-bright);
+  color: var(--color-primary-bright);
+  box-shadow: 0 0 16px var(--color-primary), inset 0 0 8px rgba(0, 0, 0, 0.3);
+  transform: none;
+}
+
+[data-theme^="cyberpunk"] .header-icon-btn::after {
+  display: none !important;
+}
+
+/* Scan line effect on button hover (not for dropdown buttons or icon buttons) */
+[data-theme^="cyberpunk"] button:not(.user-dropdown button):not(.header-icon-btn)::after,
+[data-theme^="cyberpunk"] .btn:not(.user-dropdown .btn)::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+[data-theme^="cyberpunk"] button:not(.user-dropdown button):not(.header-icon-btn):hover::after,
+[data-theme^="cyberpunk"] .btn:not(.user-dropdown .btn):hover::after {
+  left: 100%;
+}
+
+[data-theme^="cyberpunk"] button:not(.user-dropdown button):not(.header-icon-btn):hover,
+[data-theme^="cyberpunk"] .btn:not(.user-dropdown .btn):hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Progress bars - V's HUD style */
+[data-theme^="cyberpunk"] .progress-bar,
+[data-theme^="cyberpunk"] .resource-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme^="cyberpunk"] .progress-fill,
+[data-theme^="cyberpunk"] .resource-fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  box-shadow: 0 0 10px var(--color-primary),
+              inset 0 0 5px rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+
+/* Glowing edges on progress bars */
+[data-theme^="cyberpunk"] .progress-fill::after,
+[data-theme^="cyberpunk"] .resource-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 8px var(--color-primary-bright);
+}
+
+/* Tool Cards - Ripperdoc Menu Style */
+[data-theme^="cyberpunk"] .tool-card {
+  background: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme^="cyberpunk"] .tool-card:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6),
+              0 0 30px var(--color-primary);
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Tool card icon - add glow */
+[data-theme^="cyberpunk"] .tool-icon {
+  filter: drop-shadow(0 0 10px var(--color-primary));
+  font-size: 3rem;
+}
+
+/* Activity Feed - Data Stream */
+[data-theme^="cyberpunk"] .activity-item {
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 3px solid var(--color-secondary);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+/* Pulse indicator */
+[data-theme^="cyberpunk"] .activity-item::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  box-shadow: 0 0 15px var(--color-secondary);
+}
+
+/* Most recent item - animated pulse */
+[data-theme^="cyberpunk"] .activity-item:first-child::before {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Countdown Widget - HUD Style */
+[data-theme^="cyberpunk"] .countdown-widget {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-primary);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7),
+              0 0 20px var(--color-primary);
+}
+
+[data-theme^="cyberpunk"] .countdown-time {
+  font-family: var(--font-mono);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--color-warning);
+  text-shadow: 0 0 15px var(--color-warning),
+               0 0 30px var(--color-warning);
+  letter-spacing: 0.1em;
+}
+
+/* Glitch Effect Animation */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+    text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                -0.05em 0 0 rgba(0, 255, 255, 0.75);
+  }
+  14% {
+    transform: translate(0);
+    text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                -0.05em 0 0 rgba(0, 255, 255, 0.75);
+  }
+  15% {
+    transform: translate(-0.05em, 0.05em);
+    text-shadow: -0.05em 0 0 rgba(255, 0, 0, 0.75),
+                 0.05em 0 0 rgba(0, 255, 255, 0.75);
+  }
+  49% {
+    transform: translate(-0.05em, 0.05em);
+    text-shadow: -0.05em 0 0 rgba(255, 0, 0, 0.75),
+                 0.05em 0 0 rgba(0, 255, 255, 0.75);
+  }
+  50% {
+    transform: translate(0.05em, -0.05em);
+    text-shadow: 0.05em 0 0 rgba(0, 255, 255, 0.75),
+                -0.05em 0 0 rgba(255, 0, 0, 0.75);
+  }
+  99% {
+    transform: translate(0.05em, -0.05em);
+    text-shadow: 0.05em 0 0 rgba(0, 255, 255, 0.75),
+                -0.05em 0 0 rgba(255, 0, 0, 0.75);
+  }
+  100% {
+    transform: translate(0);
+    text-shadow: 0.05em 0 0 rgba(255, 0, 0, 0.75),
+                -0.05em 0 0 rgba(0, 255, 255, 0.75);
+  }
+}
+
+.glitch-effect {
+  animation: glitch 0.3s linear 1;
+}
+
+/* Variant toggle button needs special styling */
+[data-theme^="cyberpunk"] .variant-toggle-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-primary);
+  font-weight: 500;
+}
+
+[data-theme^="cyberpunk"] .variant-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-primary-bright);
+}
+
+/* Warning badges - Better contrast with dark text on gold */
+[data-theme^="cyberpunk"] .badge-warning {
+  background: var(--color-warning);
+  color: #000000;
+  text-shadow: none;
+}
+
+/* Ensure form inputs have good contrast */
+[data-theme^="cyberpunk"] .form-input,
+[data-theme^="cyberpunk"] .form-select,
+[data-theme^="cyberpunk"] .form-textarea {
+  color: var(--color-text-primary);
+  background: var(--color-bg-card);
+}
+
+/* Ensure placeholders are visible */
+[data-theme^="cyberpunk"] .form-input::placeholder,
+[data-theme^="cyberpunk"] .form-textarea::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme^="cyberpunk"] * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-theme^="cyberpunk"] body::after {
+    animation: none !important;
+  }
+
+  [data-theme^="cyberpunk"] #currentTime {
+    animation: none !important;
+  }
+}

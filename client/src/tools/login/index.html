@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Theme initialization - MUST run before CSS loads -->
+    <script>
+        (function() {
+            try {
+                const theme = localStorage.getItem('brandpack:theme') || 'default';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                // localStorage unavailable, use default
+                document.documentElement.setAttribute('data-theme', 'default');
+            }
+        })();
+    </script>
+
+    <title>Login - Brandpack Tools</title>
+    <link rel="stylesheet" href="../../shared/styles/theme.css">
+    <link rel="stylesheet" href="../../shared/styles/base.css">
+    <link rel="stylesheet" href="../../shared/styles/components.css">
+    <link rel="stylesheet" href="./login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card" id="loginCard">
+            <!-- Header -->
+            <div class="login-header">
+                <div class="login-logo">
+                    <div class="logo-icon">🔐</div>
+                </div>
+                <h1 class="login-title text-gradient">Brandpack Tools</h1>
+                <p class="login-subtitle">Sign in to continue</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="login-form">
+                <!-- Username Input -->
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        class="form-input"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <!-- PIN Display -->
+                <div class="form-group">
+                    <label class="form-label">PIN</label>
+                    <div class="pin-display" id="pinDisplay" tabindex="0">
+                        <span class="pin-dots"></span>
+                    </div>
+                </div>
+
+                <!-- PIN Pad -->
+                <div class="pin-pad">
+                    <button type="button" class="pin-button" data-digit="1">1</button>
+                    <button type="button" class="pin-button" data-digit="2">2</button>
+                    <button type="button" class="pin-button" data-digit="3">3</button>
+                    <button type="button" class="pin-button" data-digit="4">4</button>
+                    <button type="button" class="pin-button" data-digit="5">5</button>
+                    <button type="button" class="pin-button" data-digit="6">6</button>
+                    <button type="button" class="pin-button" data-digit="7">7</button>
+                    <button type="button" class="pin-button" data-digit="8">8</button>
+                    <button type="button" class="pin-button" data-digit="9">9</button>
+                    <button type="button" class="pin-button pin-button-clear" id="clearButton">Clear</button>
+                    <button type="button" class="pin-button" data-digit="0">0</button>
+                    <button type="button" class="pin-button pin-button-backspace" id="backspaceButton">
+                        <span>⌫</span>
+                    </button>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="error-message hidden"></div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-lg login-submit" id="loginButton">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <p class="login-footer-text">Proofing Room Operations Suite v3.0.0</p>
+            </div>
+        </div>
+
+        <!-- First-Time Setup Card -->
+        <div class="setup-card" id="setupCard" style="display: none;">
+            <div class="setup-header">
+                <div class="setup-icon">🎉</div>
+                <h2 class="setup-title">Welcome to Brandpack Tools!</h2>
+                <p class="setup-subtitle">Let's set up your administrator account</p>
+            </div>
+
+            <form id="setupForm" class="setup-form">
+                <div class="form-group">
+                    <label class="form-label" for="setupUsername">Admin Username</label>
+                    <input
+                        type="text"
+                        id="setupUsername"
+                        class="form-input"
+                        required
+                        minlength="3"
+                        placeholder="Enter admin username"
+                        autocomplete="username"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="setupPin">Admin PIN (4-6 digits)</label>
+                    <input
+                        type="password"
+                        id="setupPin"
+                        class="form-input"
+                        required
+                        pattern="[0-9]{4,6}"
+                        maxlength="6"
+                        placeholder="Enter 4-6 digit PIN"
+                        autocomplete="new-password"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="setupPinConfirm">Confirm PIN</label>
+                    <input
+                        type="password"
+                        id="setupPinConfirm"
+                        class="form-input"
+                        required
+                        pattern="[0-9]{4,6}"
+                        maxlength="6"
+                        placeholder="Re-enter PIN"
+                        autocomplete="new-password"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="importLegacyData">
+                        <span>Import data from previous version (optional)</span>
+                    </label>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+
+                <div class="error-message" id="setupError" style="display: none;"></div>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-full" id="setupSubmitBtn">
+                    Complete Setup
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <p class="login-footer-text">Proofing Room Operations Suite v3.0.0</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./login.js"></script>
+</body>
+</html>

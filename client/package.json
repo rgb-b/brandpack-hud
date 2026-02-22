@@ -1,0 +1,24 @@
+{
+  "name": "brandpack-tools-client",
+  "version": "3.0.0",
+  "description": "Frontend client for Brandpack Tools",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "brandpack",
+    "tools",
+    "frontend"
+  ],
+  "author": "Brandpack Australasia",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "onscan.js": "^1.5.2"
+  }
+}

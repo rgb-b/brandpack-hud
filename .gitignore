@@ -3,6 +3,16 @@ node_modules/
 
 # Build output
 dist/
+client/dist/
+
+# Database
+server/data/*.db
+server/data/*.db-wal
+server/data/*.db-shm
+server/data/*.db.backup-*
+
+# Database backups
+server/backups/
 
 # Package files
 *.tar.gz
@@ -11,10 +21,14 @@ dist/
 # Environment
 .env
 .env.local
+server/.env
 
 # IDE
 .vscode/
 .idea/
+
+# Claude Code
+.claude/
 
 # OS
 .DS_Store
