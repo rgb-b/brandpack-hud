@@ -34,7 +34,7 @@ export async function getUserById(db, id) {
   const dbPromise = promisifyDb(db)
 
   const user = await dbPromise.get(
-    'SELECT id, username, role, created_at FROM users WHERE id = ?',
+    'SELECT id, username, role, created_at, session_invalidated_at FROM users WHERE id = ?',
     [id]
   )
 

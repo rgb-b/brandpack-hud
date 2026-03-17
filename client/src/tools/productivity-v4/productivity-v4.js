@@ -9,6 +9,7 @@ import { productivityV4, productivity as timeclock, dashboard } from '../../api/
 import { requireAuth } from '../../shared/utils/auth.js'
 import toast from '../../shared/components/Toast.js'
 import { formatTime } from '../../shared/utils/datetime.js'
+import { lowEnergy } from '../../shared/utils/lowEnergy.js'
 
 // ============================================================================
 // HELPERS
@@ -884,7 +885,7 @@ function startTimer() {
       const elapsed = Date.now() - state.activeSession.start_time
       timerEl.textContent = formatMs(elapsed)
     }
-  }, 1000)
+  }, lowEnergy.get() ? 5000 : 1000)
 }
 
 function stopTimer() {
@@ -928,7 +929,7 @@ function startPolling() {
     } catch (error) {
       console.error('[Polling] Failed to sync session:', error)
     }
-  }, 3000) // Poll every 3 seconds
+  }, lowEnergy.get() ? 30000 : 3000) // Poll every 3s (or 30s in low energy mode)
 }
 
 function stopPolling() {

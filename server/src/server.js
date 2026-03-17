@@ -16,6 +16,7 @@ import dotenv from 'dotenv'
 
 // Import database
 import { getDatabase, closeDatabase } from './config/database.js'
+import { startShiftScheduler, stopShiftScheduler } from './utils/shiftScheduler.js'
 
 // Load environment variables
 dotenv.config()
@@ -87,6 +88,14 @@ getDatabase()
         () => resolve() // Ignore error — column already exists on up-to-date DBs
       )
     })
+    // Auto-migrate: add session_invalidated_at to users if not present
+    await new Promise((resolve) => {
+      db.run(
+        'ALTER TABLE users ADD COLUMN session_invalidated_at BIGINT DEFAULT NULL',
+        () => resolve() // Ignore error — column already exists on up-to-date DBs
+      )
+    })
+    startShiftScheduler()
   })
   .catch((error) => {
     console.error('✗ Database initialization failed:', error)
@@ -96,6 +105,13 @@ getDatabase()
 // ============================================================================
 // API ROUTES
 // ============================================================================
+
+// ── File downloads (internal network only) ────────────────────────────
+const downloadsPath = join(__dirname, '../downloads')
+app.get('/downloads/:filename', (req, res) => {
+  const filename = req.params.filename.replace(/[^a-zA-Z0-9._-]/g, '') // sanitise
+  res.download(join(downloadsPath, filename))
+})
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -237,6 +253,7 @@ function gracefulShutdown() {
   console.log('\n🛑 Shutting down gracefully...')
   server.close(() => {
     console.log('✓ Server closed')
+    stopShiftScheduler()
     closeDatabase()
     process.exit(0)
   })

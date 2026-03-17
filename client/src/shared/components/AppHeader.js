@@ -6,6 +6,7 @@
 import { getCurrentUserFromCache, clearCurrentUserCache, isAdmin } from '../utils/auth.js'
 import { users } from '../../api/client.js'
 import { theme } from '../utils/theme.js'
+import { lowEnergy } from '../utils/lowEnergy.js'
 import commandPalette from './CommandPalette.js'
 import toast from './Toast.js'
 import keyboardService from '../utils/keyboard.js'
@@ -75,6 +76,12 @@ export class AppHeader extends HTMLElement {
                 <div class="theme-submenu" id="themeSubmenu" style="display: none;">
                   ${this.renderThemeOptions()}
                 </div>
+                <button class="dropdown-item" id="lowEnergyToggle">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path fill="currentColor" d="M7 2v11h3v9l7-12h-4l4-8z"/>
+                  </svg>
+                  Low Energy: <span id="lowEnergyStatus">${lowEnergy.get() ? 'On' : 'Off'}</span>
+                </button>
                 <button class="dropdown-item logout-btn" id="logoutBtn">
                   <svg viewBox="0 0 24 24" width="16" height="16">
                     <path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
@@ -240,6 +247,21 @@ export class AppHeader extends HTMLElement {
         }
       })
     }
+
+    const lowEnergyToggle = this.querySelector('#lowEnergyToggle')
+    const lowEnergyStatus = this.querySelector('#lowEnergyStatus')
+    if (lowEnergyToggle) {
+      lowEnergyToggle.addEventListener('click', (e) => {
+        e.stopPropagation()
+        const enabled = lowEnergy.toggle()
+        if (lowEnergyStatus) lowEnergyStatus.textContent = enabled ? 'On' : 'Off'
+        if (dropdown) dropdown.style.display = 'none'
+      })
+    }
+
+    window.addEventListener('lowenergychange', (e) => {
+      if (lowEnergyStatus) lowEnergyStatus.textContent = e.detail.enabled ? 'On' : 'Off'
+    })
   }
 
   attachThemeOptionListeners() {

@@ -7,6 +7,10 @@ import { dashboard, inventory, maintenance, pantone, productivity, users, produc
 import toast from '../../shared/components/Toast.js'
 import '../../shared/utils/cyberpunk-effects.js'
 import { formatDuration } from '../../shared/utils/datetime.js'
+import { lowEnergy } from '../../shared/utils/lowEnergy.js'
+
+// Helper: pick normal or low-energy interval value
+function le(normal, low) { return lowEnergy.get() ? low : normal }
 
 // Make toast globally accessible
 window.toast = toast
@@ -53,16 +57,16 @@ async function init() {
     initializeCountdownWidget()
     initProductivityWidget()
 
-    // Refresh stats every 30 seconds
-    intervals.stats = setInterval(loadQuickStats, 30000)
-    intervals.resources = setInterval(loadResourceStats, 30000)
-    intervals.activity = setInterval(loadActivityFeed, 30000)
+    // Refresh stats every 30 seconds (or 5 min in low energy mode)
+    intervals.stats    = setInterval(loadQuickStats, le(30000, 300000))
+    intervals.resources = setInterval(loadResourceStats, le(30000, 300000))
+    intervals.activity  = setInterval(loadActivityFeed, le(30000, 300000))
 
-    // Refresh calendar every 5 minutes
-    intervals.calendar = setInterval(renderWeekView, 300000)
+    // Refresh calendar every 5 minutes (or 15 min in low energy mode)
+    intervals.calendar = setInterval(renderWeekView, le(300000, 900000))
 
-    // Refresh maintenance reminder every 5 minutes
-    intervals.maintenanceReminder = setInterval(loadMaintenanceReminder, 300000)
+    // Refresh maintenance reminder every 5 minutes (or 15 min in low energy mode)
+    intervals.maintenanceReminder = setInterval(loadMaintenanceReminder, le(300000, 900000))
 }
 
 // Add admin tool card to the tools grid
@@ -110,7 +114,7 @@ function updateClock() {
 // Initialize live clock
 function initializeClock() {
     updateClock()
-    intervals.clock = setInterval(updateClock, 1000)
+    intervals.clock = setInterval(updateClock, le(1000, 60000))
 }
 
 // Calendar functionality - Week View
@@ -1735,30 +1739,36 @@ function pauseAllPolling() {
 function resumeAllPolling() {
     // Immediately refresh each section, then restart its interval
     updateClock()
-    intervals.clock = setInterval(updateClock, 1000)
+    intervals.clock = setInterval(updateClock, le(1000, 60000))
 
     updateCountdown()
-    intervals.countdown = setInterval(updateCountdown, 1000)
+    intervals.countdown = setInterval(updateCountdown, le(1000, 60000))
 
     loadQuickStats()
-    intervals.stats = setInterval(loadQuickStats, 30000)
+    intervals.stats = setInterval(loadQuickStats, le(30000, 300000))
 
     loadResourceStats()
-    intervals.resources = setInterval(loadResourceStats, 30000)
+    intervals.resources = setInterval(loadResourceStats, le(30000, 300000))
 
     loadActivityFeed()
-    intervals.activity = setInterval(loadActivityFeed, 30000)
+    intervals.activity = setInterval(loadActivityFeed, le(30000, 300000))
 
     renderWeekView()
-    intervals.calendar = setInterval(renderWeekView, 300000)
+    intervals.calendar = setInterval(renderWeekView, le(300000, 900000))
 
     loadMaintenanceReminder()
-    intervals.maintenanceReminder = setInterval(loadMaintenanceReminder, 300000)
+    intervals.maintenanceReminder = setInterval(loadMaintenanceReminder, le(300000, 900000))
 
     updateProductivityWidget()
-    productivityWidgetState.pollingInterval = setInterval(updateProductivityWidget, 3000)
+    productivityWidgetState.pollingInterval = setInterval(updateProductivityWidget, le(3000, 30000))
     // Note: timerInterval is restarted by updateProductivityWidget when an active session exists
 }
+
+// Re-init intervals when low energy mode is toggled
+window.addEventListener('lowenergychange', () => {
+    pauseAllPolling()
+    resumeAllPolling()
+})
 
 // ============================================================================
 // SCREENSAVER HUD

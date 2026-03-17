@@ -29,6 +29,13 @@ export const requireAuth = asyncHandler(async (req, res, next) => {
     return res.status(401).json(unauthorized('User not found'))
   }
 
+  // Check if session was invalidated by the shift scheduler
+  const loginTime = req.session.loginTime || 0
+  if (user.session_invalidated_at && loginTime < user.session_invalidated_at) {
+    req.session.destroy(() => {})
+    return res.status(401).json(unauthorized('Session expired'))
+  }
+
   // Attach user to request object
   req.user = user
 

@@ -2602,3 +2602,14 @@ tr:hover {
     padding: var(--spacing-xs);
   }
 }
+
+/* ============================================================================
+   LOW ENERGY MODE — kills animations and transitions for Mac/low-RAM devices
+   ============================================================================ */
+[data-low-energy="true"] *,
+[data-low-energy="true"] *::before,
+[data-low-energy="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}

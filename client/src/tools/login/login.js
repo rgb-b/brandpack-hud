@@ -6,6 +6,7 @@
 import { login } from '../../shared/utils/auth.js'
 import { setCurrentUserCache } from '../../shared/utils/storage.js'
 import '../../shared/utils/cyberpunk-effects.js'
+import '../../shared/utils/lowEnergy.js'
 
 // Login state
 let pinValue = ''

@@ -184,6 +184,12 @@ router.post('/stop', asyncHandler(async (req, res) => {
     return res.status(400).json(validationError('No active tracking session'))
   }
 
+  // Phantom session: active session row existed but had no matching tracking entry.
+  // It's been cleared — return success so the client resets its UI state.
+  if (session.phantom) {
+    return res.json(success(null))
+  }
+
   // Check if should auto clock-out based on work schedule
   const shouldClockOut = await WorkSchedule.shouldAutoClockOut(db, req.user.id, Date.now())
   let autoClockedOut = false

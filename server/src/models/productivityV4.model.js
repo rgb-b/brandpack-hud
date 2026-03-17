@@ -202,8 +202,12 @@ export async function stopTracking(db, userId, endTime = Date.now()) {
     [userId]
   )
 
+  // Always clear active session — prevents phantom sessions from getting stuck
+  const cleared = await run('DELETE FROM productivity_active_sessions_v4 WHERE user_id = ?', [userId])
+
   if (!active) {
-    return null
+    // Phantom session (active session row existed but no open tracking entry)
+    return cleared.changes > 0 ? { phantom: true } : null
   }
 
   const duration = endTime - active.start_time
@@ -213,9 +217,6 @@ export async function stopTracking(db, userId, endTime = Date.now()) {
     'UPDATE productivity_tracking_v4 SET end_time = ?, duration = ? WHERE id = ?',
     [endTime, duration, active.id]
   )
-
-  // Clear active session
-  await run('DELETE FROM productivity_active_sessions_v4 WHERE user_id = ?', [userId])
 
   return {
     id: active.id,

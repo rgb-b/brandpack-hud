@@ -1,8 +1,0 @@
-in the inventory tool, the add new machine button is square, not rounded.
-
-back to launcher buttons should be sticky to the page, and ideally just a little icon in the corner (for all tools/pages)
-
-
-the user drop down menu is hitting the edge in a lot of the tools. make sure the header is consistant.
-
-

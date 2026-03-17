@@ -175,6 +175,7 @@ router.post('/login', loginLimiter, asyncHandler(async (req, res) => {
     }
 
     req.session.userId = user.id
+    req.session.loginTime = Date.now()
 
     req.session.save((saveErr) => {
       if (saveErr) {
