@@ -110,7 +110,7 @@ function renderApp() {
   const app = document.getElementById('app')
 
   app.innerHTML = `
-    <app-header tool-name="Productivity Tracker V4"></app-header>
+    <app-header tool-name="Time Tracker"></app-header>
 
     <!-- Sticky Header Section -->
     <div class="productivity-header">
@@ -313,7 +313,9 @@ function renderRecentSessions() {
               <span>${formatTime(new Date(s.start_time))}</span>
             </div>
           </div>
-          <div class="session-duration">${formatMs(s.duration)}</div>
+          <div class="session-duration${s.duration > 43200000 ? ' session-duration--suspect' : ''}">
+              ${s.duration > 43200000 ? '⚠️ &gt;12h' : formatMs(s.duration)}
+            </div>
         </li>
       `).join('')}
     </ul>

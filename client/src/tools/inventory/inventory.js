@@ -1462,24 +1462,24 @@ function renderMachineSelectionView() {
 
   return `
     <div style="padding: 20px;">
-      <div style="text-align: center; margin-bottom: 40px;">
-        <h2 style="margin: 0 0 12px 0; font-size: 28px; color: var(--color-text-primary);">
-          Select a Machine to Manage
-        </h2>
-        <p style="margin: 0 0 20px 0; color: var(--color-text-secondary); font-size: 16px;">
-          Click on a machine to view and edit its inventory
-        </p>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+        <h2 style="margin: 0; font-size: 20px; color: var(--color-text-primary);">Machines</h2>
         <button
           class="btn-primary"
           onclick="window.inventoryApp.showAddMachineModal()"
-          style="padding: 12px 24px; font-size: 16px; display: inline-flex; align-items: center; gap: 8px;"
+          style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 14px;"
         >
-          <span style="font-size: 20px;">➕</span>
+          <span>+</span>
           Add New Machine
         </button>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; max-width: 1200px; margin: 0 auto;">
+        ${machineStats.length === 0 ? `
+          <div style="grid-column: 1 / -1; padding: 24px; background: var(--gradient-card); border-radius: var(--radius-xl); border: 1px dashed rgba(255,255,255,0.15); color: var(--color-text-muted); text-align: center; font-size: 14px;">
+            No machines yet — add one to get started
+          </div>
+        ` : ''}
         ${machineStats.map(stats => `
           <div
             onclick="window.inventoryApp.selectMachine('${stats.printer}')"

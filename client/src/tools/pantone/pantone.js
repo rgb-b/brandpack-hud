@@ -235,15 +235,15 @@ async function updateStats() {
             </div>
             <div class="stat-card">
                 <div class="stat-value">${stats.matched || 0}</div>
-                <div class="stat-label">✅ Matched</div>
+                <div class="stat-label">🎨 Matched</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">${stats.not_matched || 0}</div>
-                <div class="stat-label">❌ Not Matched</div>
+                <div class="stat-label">🔲 Not Matched</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">${stats.old || 0}</div>
-                <div class="stat-label">⚠️ Old (5+ years)</div>
+                <div class="stat-label">📅 Old (5+ years)</div>
             </div>
         `
     } catch (error) {

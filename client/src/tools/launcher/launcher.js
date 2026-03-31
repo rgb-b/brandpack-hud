@@ -81,6 +81,7 @@ function addAdminToolCard() {
         <div class="tool-icon">👤</div>
         <div class="tool-title">Admin Panel</div>
         <div class="tool-desc">Manage users and system settings</div>
+        <div class="tool-stat"></div>
     `
 
     // Insert admin card as the first tool
@@ -429,6 +430,17 @@ async function loadQuickStats() {
         // Update status indicator
         updateStatusIndicator(activeIssues)
 
+        // Tool card live stats
+        const invStat = document.getElementById('tool-stat-inventory')
+        if (invStat) invStat.textContent = lowStockItems > 0 ? `${lowStockItems} low stock` : 'All stocked'
+        const prodStat = document.getElementById('tool-stat-productivity')
+        if (prodStat) {
+            const h = Math.floor(todayTime / 3600000), m = Math.floor((todayTime % 3600000) / 60000)
+            prodStat.textContent = todayTime > 0 ? `${h}h ${m}m today` : 'No activity today'
+        }
+        const maintStat = document.getElementById('tool-stat-maintenance')
+        if (maintStat) maintStat.textContent = activeIssues > 0 ? `${activeIssues} active issue${activeIssues !== 1 ? 's' : ''}` : 'No open issues'
+
         // Pantone stats
         const pantoneTotal = stats.pantone?.total || 0
         const unmatched = stats.pantone?.unmatched || 0
@@ -437,6 +449,8 @@ async function loadQuickStats() {
             unmatched > 0
                 ? `${unmatched} color${unmatched > 1 ? 's' : ''} need matching`
                 : 'All colors matched'
+        const pantoneStat = document.getElementById('tool-stat-pantone')
+        if (pantoneStat) pantoneStat.textContent = unmatched > 0 ? `${unmatched} unmatched` : 'All matched'
 
     } catch (error) {
         console.error('Error loading aggregated stats:', error)
